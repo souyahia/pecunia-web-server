@@ -1,9 +1,12 @@
 node_modules
 npm-debug.log
-/dist
+dist/
+apidoc/
 *.tsbuildinfo
 .eslintcache
 .git
 .gitattributes
 .gitignore
 README.md
+custom/
+

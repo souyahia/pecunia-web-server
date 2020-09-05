@@ -1,30 +1,26 @@
 import { Request, Response } from 'express';
-// import { getManager } from 'typeorm';
-// import { Keyword } from '../entities';
 
 /**
- * Ping the web server and get a greeting message.
- * @route GET /ping
+ * @api { get } /ping Ping the server.
+ * @apiName GetPing
+ * @apiGroup Ping
+ *
+ * @apiSuccess (200) { String } message Greeting message from the server.
+ * @apiSuccess (200) { String } date Current date time.
+ * @apiSuccess (200) { String } url Url of the request.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "message": "Greetings from the Pecunia web server.",
+ *       "date": "2020-09-05T18:37:01.849Z",
+ *       "url": "/ping",
+ *     }
  */
-export function ping(req: Request, res: Response): void {
+export function getPing(req: Request, res: Response): void {
   res.status(200).send({
     message: 'Greetings from the Pecunia web server.',
     date: new Date().toISOString(),
     url: req.url,
   });
 }
-
-// /**
-//  * Ping the web server and get a greeting message.
-//  * @route GET /ping
-//  */
-// export async function ping(req: Request, res: Response): Promise<void> {
-//   const result = await getManager().getRepository(Keyword).find({ relations: [ 'category' ] });
-//   res.status(200).send({
-//     message: 'Greetings from the Pecunia web server.',
-//     date: new Date().toISOString(),
-//     url: req.url,
-//     result
-//   });
-// }
-
