@@ -32,7 +32,7 @@ switch (nconf.get('Logger:Stream')) {
  * Application logger. Can be configured through NConf.
  */
 const logger = createLogger({
-  name: 'express-typescript-template-logger',
+  name: 'pecunia-ws-logger',
   level,
   streams: [stream],
   serializers: bunyanDebugStream.serializers,

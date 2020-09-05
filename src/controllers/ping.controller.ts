@@ -7,7 +7,7 @@ import { Request, Response } from 'express';
  */
 export function ping(req: Request, res: Response): void {
   res.status(200).send({
-    message: 'Greetings from express-typescript-template web server.',
+    message: 'Greetings from the Pecunia web server.',
     date: new Date().toISOString(),
     url: req.url,
   });

@@ -1,22 +1,18 @@
 {
-  "name": "express-typescript-template",
+  "name": "pecunia-web-server",
   "version": "0.0.1",
-  "description": "A custom project template for NodeJs Express web server developed using TypeScript.",
+  "description": "An Express web server for the Pecunia app.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Samy Ouyahia",
   "email": "sr.ouyahia@gmail.com",
   "url": "",
   "keywords": [
-    "custom",
-    "nodejs",
-    "template",
-    "typescript",
-    "express",
+    "pecunia",
+    "web",
     "server",
-    "api",
-    "project",
-    "architecture"
+    "typescript",
+    "express"
   ],
   "license": "ISC",
   "scripts": {
@@ -76,7 +72,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/souyahia/express-typescript-template.git"
+    "url": "https://github.com/souyahia/pecunia-web-server.git"
   },
   "private": false
 }
