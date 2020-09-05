@@ -15,4 +15,15 @@ else
 fi
 
 cd /home/node/app
-npm run "${NPM_SCRIPT}"
+#npm run "${NPM_SCRIPT}"
+echo "Waiting for the database to be ready at ${Database__Host}:${Database__Port}..."
+./wait-for ${Database__Host}:${Database__Port} -q -t ${DB_TIMEOUT}
+if [ $? = 0 ]
+then
+  echo "Database is ready, starting the server."
+  npm run "${NPM_SCRIPT}"
+else
+  echo "Timeout waiting for database after ${DB_TIMEOUT} seconds."
+  echo "Exiting..."
+  exit 1
+fi

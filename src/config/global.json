@@ -2,6 +2,13 @@
   "Server": {
     "Port": 3000
   },
+  "Database": {
+    "Host": "localhost",
+    "Port": 3306,
+    "User": "user",
+    "Password": "password",
+    "Database": "pecunia_db"
+  },
   "Logger": {
     "Level": "warn",
     "Stream": "bunyan-debug-stream",

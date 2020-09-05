@@ -7,6 +7,8 @@ WORKDIR /home/node/app
 COPY package*.json ./
 COPY .npmrc .npmrc
 
+RUN apk update && apk add --no-cache netcat-openbsd
+
 RUN apk add --no-cache --virtual .gyp python make g++ \
   && npm install \
   && apk del .gyp
