@@ -28,9 +28,6 @@ switch (config.get('Logger:Stream')) {
     throw new Error(`Unknown Logger Stream : ${config.get('Logger:Stream') as string}.`);
 }
 
-/**
- * Application logger. Can be configured through NConf.
- */
 const logger = createLogger({
   name: 'pecunia-ws-logger',
   level,

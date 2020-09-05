@@ -4,9 +4,6 @@ import config from '../config';
 
 const showHeaders = (config.get('Logger:ShowHeaders') as string).toLowerCase() === 'true';
 
-/**
- * Logging middleware automatically logging requests and responses.
- */
 export default function logMiddleware(req: Request, res: Response, next: NextFunction): void {
   res.once('finish', () => {
     let message = `${req.method} ON ${req.url} (${res.statusCode}${

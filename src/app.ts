@@ -9,8 +9,6 @@ const app = express();
 
 app.use(logMiddleware);
 
-// Add your middlewares here.
-
 registerRoutes(app);
 
 app.all('*', errorController.badEndPoint);
