@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  pecunia-web-server:
+    build:
+      context: ./
+    container_name: pecunia-ws-container
+    environment: 
+      NODE_ENV: test
+      coverage: "true"
+      Server__Port: 3005
+      Logger__Level: "info"
+      Logger__Stream: "bunyan-debug-stream"
+      Logger__ShowHeaders: "false"
+    ports:
+      - "3005:3005"
+    volumes:
+      - "./:/home/node/app"
