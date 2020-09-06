@@ -68,6 +68,7 @@
   "dependencies": {
     "bunyan": "^1.8.14",
     "bunyan-debug-stream": "^2.0.0",
+    "class-validator": "^0.12.2",
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
     "mysql": "^2.18.1",

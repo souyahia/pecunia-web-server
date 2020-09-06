@@ -17,7 +17,6 @@ export default async function connectDB(): Promise<void> {
       Transaction,
       User,
     ],
-    synchronize: true,
     logging: false
   };
   logger.debug('Initating connection to database with the following configuration :');
@@ -27,5 +26,6 @@ export default async function connectDB(): Promise<void> {
   logger.debug(`- USERNAME : ${connectOptions.username}`);
   logger.debug(`- PASSWORD : ${connectOptions.password}`);
   logger.debug(`- DATABASE : ${connectOptions.database}`);
-  await createConnection(connectOptions);
+  const connection = await createConnection(connectOptions);
+  await connection.synchronize(true);
 };
