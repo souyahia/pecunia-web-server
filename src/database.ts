@@ -11,13 +11,8 @@ export default async function connectDB(): Promise<void> {
     username: config.get('Database:User') as string,
     password: config.get('Database:Password') as string,
     database: config.get('Database:Database') as string,
-    entities: [
-      Category,
-      Keyword,
-      Transaction,
-      User,
-    ],
-    logging: false
+    entities: [Category, Keyword, Transaction, User],
+    logging: false,
   };
   logger.debug('Initating connection to database with the following configuration :');
   logger.debug(`- TYPE     : ${connectOptions.type}`);
@@ -28,4 +23,4 @@ export default async function connectDB(): Promise<void> {
   logger.debug(`- DATABASE : ${connectOptions.database}`);
   const connection = await createConnection(connectOptions);
   await connection.synchronize(true);
-};
+}

@@ -1,5 +1,3 @@
 import EntityValidationError from './entityValidation.error';
 
-export {
-  EntityValidationError,
-};
+export { EntityValidationError };

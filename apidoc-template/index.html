@@ -1,7 +1,5 @@
 <!doctype html>
-<html>
-
-<head>
+<html><head>
   <title>Loading...</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -10,62 +8,35 @@
   <link href="css/style.css" rel="stylesheet" media="screen, print">
   <link href="img/favicon.ico" rel="icon" type="image/x-icon">
   <script src="vendor/polyfill.js"></script>
-
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-
 <body>
 
-  <script id="template-sidenav" type="text/x-handlebars-template">
-    <nav id="scrollingNav">
-
-    <ul class="sidenav nav nav-list list col-md-2">
-
-    <div class="row">
-      <div class="sidenav-logo col-md-2">
-        <img src="img/logo.png" />
-        {{#if apiName}}<h3>{{{apiName}}}</h3>{{/if}}
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="sidenav-search col-md-2">
-        <input class="form-control search" type="text" placeholder="{{__ "Search"}}">
-        <span class="search-reset">&#10005;</span>
-        <span class="search-reset">&#10005;</span>
-      </div>
-    </div>
-
-    {{#each nav}}
-      {{#if title}}
-        {{#if isHeader}}
-          {{#if isFixed}}
-            <li class="nav-fixed nav-header nav-list-item" data-group="{{group}}">
-              <a href="#api-{{group}}">{{underscoreToSpace title}}</a>
-            </li>
-          {{else}}
-            <li class="nav-header nav-list-item" data-group="{{group}}">
-              <a href="#api-{{group}}">{{underscoreToSpace title}}</a>
-            </li>
-          {{/if}}
+<script id="template-sidenav" type="text/x-handlebars-template">
+<nav id="scrollingNav">
+  <ul class="sidenav nav nav-list col-md-2">
+  {{#each nav}}
+    {{#if title}}
+      {{#if isHeader}}
+        {{#if isFixed}}
+          <li class="nav-fixed nav-header" data-group="{{group}}"><a href="#api-{{group}}">{{underscoreToSpace title}}</a></li>
         {{else}}
-          <li {{#if hidden}}class="hide" {{/if}}data-group="{{group}}" data-name="{{name}}" data-version="{{version}}">
-            <a href="#api-{{group}}-{{name}}" class="nav-list-item">
-              <div class="pull-left typ-name typ-{{toLowerCase type}}"><span>{{typeName}}</span></div>
-              <div>{{title}}</div>
-            </a>
-          </li>
+          <li class="nav-header" data-group="{{group}}"><a href="#api-{{group}}">{{underscoreToSpace title}}</a></li>
         {{/if}}
+      {{else}}
+        <li {{#if hidden}}class="hide" {{/if}}data-group="{{group}}" data-name="{{name}}" data-version="{{version}}">
+          <a href="#api-{{group}}-{{name}}">{{title}}</a>
+        </li>
       {{/if}}
-    {{/each}}
-    </ul>
-  </nav>
+    {{/if}}
+  {{/each}}
+  </ul>
+</nav>
 </script>
 
-  <script id="template-project" type="text/x-handlebars-template">
-    <div class="pull-left">
+<script id="template-project" type="text/x-handlebars-template">
+  <div class="pull-left">
     <h1>{{name}}</h1>
-    {{#if description}}<h4>{{{nl2br description}}}</h4>{{/if}}
+    {{#if description}}<h2>{{{nl2br description}}}</h2>{{/if}}
   </div>
   {{#if template.withCompare}}
   <div class="pull-right">
@@ -87,20 +58,20 @@
   <div class="clearfix"></div>
 </script>
 
-  <script id="template-header" type="text/x-handlebars-template">
-    {{#if content}}
+<script id="template-header" type="text/x-handlebars-template">
+  {{#if content}}
     <div id="api-_">{{{content}}}</div>
   {{/if}}
 </script>
 
-  <script id="template-footer" type="text/x-handlebars-template">
-    {{#if content}}
+<script id="template-footer" type="text/x-handlebars-template">
+  {{#if content}}
     <div id="api-_footer">{{{content}}}</div>
   {{/if}}
 </script>
 
-  <script id="template-generator" type="text/x-handlebars-template">
-    {{#if template.withGenerator}}
+<script id="template-generator" type="text/x-handlebars-template">
+  {{#if template.withGenerator}}
     {{#if generator}}
       <div class="content">
         {{__ "Generated with"}} <a href="{{{generator.url}}}">{{{generator.name}}}</a> {{{generator.version}}} - {{{generator.time}}}
@@ -109,132 +80,93 @@
   {{/if}}
 </script>
 
-  <script id="template-sections" type="text/x-handlebars-template">
-    <section id="api-{{group}}">
-    <h2>{{underscoreToSpace title}}</h2>
+<script id="template-sections" type="text/x-handlebars-template">
+  <section id="api-{{group}}">
+    <h1>{{underscoreToSpace title}}</h1>
     {{#if description}}
       <p>{{{nl2br description}}}</p>
     {{/if}}
-
     {{#each articles}}
       <div id="api-{{group}}-{{name}}">
         {{{article}}}
       </div>
     {{/each}}
-    </div>
   </section>
 </script>
 
-
-  <script id="template-article" type="text/x-handlebars-template">
-    <div class="row pre-{{toLowerCase article.type}}">
-    <div class="col-md-7 no-float">
-      <article id="api-{{article.group}}-{{article.name}}-{{article.version}}" {{#if hidden}}class="hide"{{/if}} data-group="{{article.group}}" data-name="{{article.name}}" data-version="{{article.version}}">
-        <div class="pull-left">
-          <h3>{{article.groupTitle}}{{#if article.title}} - {{article.title}}{{/if}}</h3>
-        </div>
-        {{#if template.withCompare}}
-        <div class="pull-right">
-          <div class="btn-group">
-            <button class="version btn dropdown-toggle" data-toggle="dropdown">
-              <strong>{{article.version}}</strong> <span class="caret"></span>
-            </button>
-            <ul class="versions dropdown-menu open-left">
-              <li class="disabled"><a href="#">{{__ "compare changes to:"}}</a></li>
-      {{#each versions}}
-              <li class="version"><a href="#">{{this}}</a></li>
-      {{/each}}
-            </ul>
-          </div>
-        </div>
-        {{/if}}
-        <div class="clearfix"></div>
-
-        {{#if article.description}}
-          <p>{{{nl2br article.description}}}</p>
-        {{/if}}
-
-        <pre class="full-pre pre-{{toLowerCase article.type}}" data-type="{{toLowerCase article.type}}"><span class="typ typ-{{toLowerCase article.type}}">{{toUpperCase article.type}}</span> <span class="url">{{article.url}}</span></pre>
-
-        {{#if article.permission}}
-          <p>
-            {{__ "Permissions:"}}
-            {{#each article.permission}}
-              &nbsp;<button href="#" title="{{title}}" data-clipboard-target="#permission-{{name}}" class="label label-info label-permission"
-              {{#if title}}data-toggle="popover" data-placement="right" data-html="true" data-content="{{nl2br description}}" data-original-title="{{title}}"{{/if}}>
-                  <strong id="permission-{{name}}">{{name}}</strong>
-                  {{#if title}}<i class="glyphicon glyphicon-info-sign glyphicon-white"></i>{{/if}}
-              </button>
-            {{/each}}
-          </p>
-        {{/if}}
-
-        {{subTemplate "article-param-block" params=article.header paramType="header" _hasType=_hasTypeInHeaderFields section="header"}}
-        {{subTemplate "article-param-block" params=article.parameter paramType="parameter" _hasType=_hasTypeInParameterFields section="parameter"}}
-        {{subTemplate "article-param-block" params=article.success paramType="success" _hasType=_hasTypeInSuccessFields section="success"}}
-        {{subTemplate "article-param-block" params=article.error paramType="error" _col1="Name" _hasType=_hasTypeInErrorFields section="error"}}
-
-        {{subTemplate "article-sample-request" article=article id=id}}
-
-      </article>
+<script id="template-article" type="text/x-handlebars-template">
+  <article id="api-{{article.group}}-{{article.name}}-{{article.version}}" {{#if hidden}}class="hide"{{/if}} data-group="{{article.group}}" data-name="{{article.name}}" data-version="{{article.version}}">
+    <div class="pull-left">
+      <h1>{{article.groupTitle}}{{#if article.title}} - {{article.title}}{{/if}}</h1>
     </div>
-    <div class="col-md-4 section-example no-float">
-      {{#if_gt article.examples.length compare=0}}
-        <ul class="nav nav-tabs nav-tabs-examples">
-          {{#each article.examples}}
-            <li{{#if_eq @index compare=0}} class="active"{{/if_eq}}>
-              <a href="#examples-{{../id}}-{{@index}}">{{title}}</a>
-            </li>
-          {{/each}}
+    {{#if template.withCompare}}
+    <div class="pull-right">
+      <div class="btn-group">
+        <button class="version btn dropdown-toggle" data-toggle="dropdown">
+          <strong>{{article.version}}</strong> <span class="caret"></span>
+        </button>
+        <ul class="versions dropdown-menu open-left">
+          <li class="disabled"><a href="#">{{__ "compare changes to:"}}</a></li>
+  {{#each versions}}
+          <li class="version"><a href="#">{{this}}</a></li>
+  {{/each}}
         </ul>
-
-        <div class="tab-content">
-        {{#each article.examples}}
-          <div class="tab-pane{{#if_eq @index compare=0}} active{{/if_eq}}" id="examples-{{../id}}-{{@index}}">
-            <pre class="prettyprint language-{{type}}" data-type="{{type}}"><code>{{content}}</code></pre>
-          </div>
-        {{/each}}
-        </div>
-      {{/if_gt}}
-
-      {{subTemplate "article-param-block-dark" params=article.success _hasType=_hasTypeInSuccessFields section="success"}}
-      {{subTemplate "article-param-block-dark" params=article.error _col1="Name" _hasType=_hasTypeInErrorFields section="error"}}
-
+      </div>
     </div>
-  </div>
-</script>
+    {{/if}}
+    <div class="clearfix"></div>
 
-  <script id="template-article-param-block-dark" type="text/x-handlebars-template">
-    {{#if params}}
-    {{#if_gt params.examples.length compare=0}}
+    {{#if article.description}}
+      <p>{{{nl2br article.description}}}</p>
+    {{/if}}
+
+    <pre data-type="{{toLowerCase article.type}}"><code><span class="typ">{{toUpperCase article.type}}</span> <span class="pln">{{article.url}}</span></code></pre>
+
+    {{#if article.permission}}
+      <p>
+        {{__ "Permissions:"}}
+        {{#each article.permission}}
+          &nbsp;<a href="#" title="{{title}}" class="label label-info"
+          {{#if title}}data-toggle="popover" data-placement="right" data-html="true" data-content="{{nl2br description}}" data-original-title="{{title}}"{{/if}}>
+              <strong>{{name}}</strong>
+              {{#if title}}<i class="glyphicon glyphicon-info-sign glyphicon-white"></i>{{/if}}
+          </a>
+        {{/each}}
+      </p>
+    {{/if}}
+
+    {{#if_gt article.examples.length compare=0}}
       <ul class="nav nav-tabs nav-tabs-examples">
-        {{#each params.examples}}
+        {{#each article.examples}}
           <li{{#if_eq @index compare=0}} class="active"{{/if_eq}}>
-            <a href="#{{../section}}-examples-{{../id}}-{{@index}}">{{title}}</a>
+            <a href="#examples-{{../id}}-{{@index}}">{{title}}</a>
           </li>
         {{/each}}
       </ul>
 
       <div class="tab-content">
-      {{#each params.examples}}
-        <div class="tab-pane{{#if_eq @index compare=0}} active{{/if_eq}}" id="{{../section}}-examples-{{../id}}-{{@index}}">
-        <pre class="prettyprint language-{{type}}" data-type="{{type}}"><code>{{content}}</code></pre>
+      {{#each article.examples}}
+        <div class="tab-pane{{#if_eq @index compare=0}} active{{/if_eq}}" id="examples-{{../id}}-{{@index}}">
+          <pre class="prettyprint language-{{type}}" data-type="{{type}}"><code>{{content}}</code></pre>
         </div>
       {{/each}}
       </div>
     {{/if_gt}}
-  {{/if}}
+
+    {{subTemplate "article-param-block" params=article.header _hasType=_hasTypeInHeaderFields section="header"}}
+    {{subTemplate "article-param-block" params=article.parameter _hasType=_hasTypeInParameterFields section="parameter"}}
+    {{subTemplate "article-param-block" params=article.success _hasType=_hasTypeInSuccessFields section="success"}}
+    {{subTemplate "article-param-block" params=article.error _col1="Name" _hasType=_hasTypeInErrorFields section="error"}}
+
+    {{subTemplate "article-sample-request" article=article id=id}}
+
+  </article>
 </script>
 
-  <script id="template-article-param-block" type="text/x-handlebars-template">
-    {{#if params}}
+<script id="template-article-param-block" type="text/x-handlebars-template">
+  {{#if params}}
     {{#each params.fields}}
-      <div class="pull-left"><h4 class="headers">{{__ @key}}</h4></div>
-      <div class="pull-right">
-        <button class="btn btn-xs json-schema" data-group="{{__ @key}}" data-param="{{../../paramType}}" >json</button>
-      </div>
-
-
+      <h2>{{__ @key}}</h2>
       <table class="table table-hover">
         <thead>
           <tr>
@@ -246,7 +178,7 @@
         <tbody>
       {{#each this}}
           <tr>
-            <td class="code">{{{splitFill field "." "&nbsp;&nbsp;"}}}{{#if optional}} <span class="label-optional">{{__ "(optional)"}}</span>{{/if}}</td>
+            <td class="code">{{{splitFill field "." "&nbsp;&nbsp;"}}}{{#if optional}} <span class="label label-default label-optional">{{__ "optional"}}</span>{{/if}}</td>
             {{#if ../../_hasType}}
               <td>
                 {{{type}}}
@@ -268,10 +200,29 @@
         </tbody>
       </table>
     {{/each}}
+
+    {{#if_gt params.examples.length compare=0}}
+      <ul class="nav nav-tabs nav-tabs-examples">
+        {{#each params.examples}}
+          <li{{#if_eq @index compare=0}} class="active"{{/if_eq}}>
+            <a href="#{{../section}}-examples-{{../id}}-{{@index}}">{{title}}</a>
+          </li>
+        {{/each}}
+      </ul>
+
+      <div class="tab-content">
+      {{#each params.examples}}
+        <div class="tab-pane{{#if_eq @index compare=0}} active{{/if_eq}}" id="{{../section}}-examples-{{../id}}-{{@index}}">
+        <pre class="prettyprint language-{{type}}" data-type="{{type}}"><code>{{content}}</code></pre>
+        </div>
+      {{/each}}
+      </div>
+    {{/if_gt}}
+
   {{/if}}
 </script>
 
-  <script id="template-article-sample-request" type="text/x-handlebars-template">
+<script id="template-article-sample-request" type="text/x-handlebars-template">
     {{#if article.sampleRequest}}
       <h2 class="hide-print">{{__ "Send a Sample Request"}}</h2>
       <form class="hide-print">
@@ -285,7 +236,7 @@
 
       {{#if article.header}}
         {{#if article.header.fields}}
-          <h4>{{__ "Headers"}}</h4>
+          <h3>{{__ "Headers"}}</h3>
           {{#each article.header.fields}}
             <div class="{{../id}}-sample-request-header-fields">
               {{#each this}}
@@ -304,7 +255,7 @@
 
       {{#if article.parameter}}
         {{#if article.parameter.fields}}
-          <h4>{{__ "Parameters"}}</h4>
+          <h3>{{__ "Parameters"}}</h3>
           {{#each article.parameter.fields}}
             <div class="{{../id}}-sample-request-param-fields">
               {{#each this}}
@@ -326,12 +277,12 @@
           </div>
 
           <div class="sample-request-response" style="display: none;">
-            <h4>
+            <h3>
               {{__ "Response"}}
               <button type="button" class="btn-link pull-right sample-request-clear">
                 <i class="glyphicon glyphicon-remove"></i>
               </button>
-            </h4>
+            </h3>
             <pre class="prettyprint language-json" data-type="json"><code class="sample-request-response-json"></code></pre>
           </div>
 
@@ -340,8 +291,8 @@
     {{/if}}
 </script>
 
-  <script id="template-compare-article" type="text/x-handlebars-template">
-    <article id="api-{{article.group}}-{{article.name}}-{{article.version}}" {{#if hidden}}class="hide"{{/if}} data-group="{{article.group}}" data-name="{{article.name}}" data-version="{{article.version}}" data-compare-version="{{compare.version}}">
+<script id="template-compare-article" type="text/x-handlebars-template">
+  <article id="api-{{article.group}}-{{article.name}}-{{article.version}}" {{#if hidden}}class="hide"{{/if}} data-group="{{article.group}}" data-name="{{article.name}}" data-version="{{article.version}}" data-compare-version="{{compare.version}}">
     <div class="pull-left">
       <h1>{{underscoreToSpace article.group}} - {{{showDiff article.title compare.title}}}</h1>
     </div>
@@ -434,8 +385,8 @@
   </article>
 </script>
 
-  <script id="template-article-compare-permission" type="text/x-handlebars-template">
-    {{#each_compare_list_field article.permission compare.permission field="name"}}
+<script id="template-article-compare-permission" type="text/x-handlebars-template">
+  {{#each_compare_list_field article.permission compare.permission field="name"}}
     {{#if source}}
       {{#if typeSame}}
         {{source.name}}
@@ -488,8 +439,8 @@
   {{/each_compare_list_field}}
 </script>
 
-  <script id="template-article-compare-param-block" type="text/x-handlebars-template">
-    {{#if source}}
+<script id="template-article-compare-param-block" type="text/x-handlebars-template">
+  {{#if source}}
     {{#each_compare_keys source.fields compare.fields}}
       {{#if typeSame}}
         <h2>{{__ source.key}}</h2>
@@ -585,8 +536,8 @@
   {{/if}}
 </script>
 
-  <script id="template-article-compare-param-block-body" type="text/x-handlebars-template">
-    <tbody>
+<script id="template-article-compare-param-block-body" type="text/x-handlebars-template">
+  <tbody>
     {{#each_compare_field source compare}}
       {{#if typeSame}}
         <tr>
@@ -665,64 +616,34 @@
   </tbody>
 </script>
 
-  <div class="container-fluid">
-    <div class="row">
-      <div id="sidenav" class="col-sm-2 col-md-2"></div>
-      <div id="content" class="col-sm-9 col-md-10">
-        <div id="project"></div>
-        <div id="header"></div>
-        <div id="sections"></div>
-        <div id="footer"></div>
-        <div id="generator"></div>
-      </div>
+<div class="container-fluid">
+  <div class="row">
+    <div id="sidenav" class="col-sm-2 col-md-2"></div>
+    <div id="content" class="col-sm-10 col-md-9">
+      <div id="project"></div>
+      <div id="header"></div>
+      <div id="sections"></div>
+      <div id="footer"></div>
+      <div id="generator"></div>
     </div>
   </div>
-
-  <div id="loader">
-    <div class="spinner">
-      <div class="spinner-container container1">
-        <div class="circle1"></div>
-        <div class="circle2"></div>
-        <div class="circle3"></div>
-        <div class="circle4"></div>
-      </div>
-      <div class="spinner-container container2">
-        <div class="circle1"></div>
-        <div class="circle2"></div>
-        <div class="circle3"></div>
-        <div class="circle4"></div>
-      </div>
-      <div class="spinner-container container3">
-        <div class="circle1"></div>
-        <div class="circle2"></div>
-        <div class="circle3"></div>
-        <div class="circle4"></div>
-      </div>
-      <p>Loading...</p>
-    </div>
-  </div>
-
-
-  <!-- Modal -->
-<div class="modal animated fadeIn" id="jsonModal" tabindex="-1" role="dialog" aria-labelledby="jsonModalLabel">
-  <div class="modal-dialog modal-md" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-clipboard"><i class="material-icons">content_copy</i></div>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"></h4>
-      </div>
-      <div class="modal-body" id="json-pre"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-  <pre id="preData" style="visibility: hidden"></pre>
 </div>
 
-  <script data-main="main.js" src="vendor/require.min.js"></script>
+<div id="loader">
+  <div class="spinner">
+    <div class="spinner-container container1">
+      <div class="circle1"></div><div class="circle2"></div><div class="circle3"></div><div class="circle4"></div>
+    </div>
+    <div class="spinner-container container2">
+      <div class="circle1"></div><div class="circle2"></div><div class="circle3"></div><div class="circle4"></div>
+    </div>
+    <div class="spinner-container container3">
+      <div class="circle1"></div><div class="circle2"></div><div class="circle3"></div><div class="circle4"></div>
+    </div>
+    <p>Loading...</p>
+  </div>
+</div>
 
-</body>
+<script data-main="main.js" src="vendor/require.min.js"></script>
 
-</html>
+</body></html>

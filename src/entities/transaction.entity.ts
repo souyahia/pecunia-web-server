@@ -7,15 +7,7 @@ import {
   JoinTable,
   Index,
 } from 'typeorm';
-import {
-  Length,
-  IsDate,
-  IsNumber,
-  IsString,
-  IsOptional,
-  IsArray,
-  IsIn,
-} from 'class-validator';
+import { Length, IsDate, IsNumber, IsString, IsOptional, IsArray, IsIn } from 'class-validator';
 import ValidableEntity from './validableEntity';
 import User from './user.entity';
 import Category from './category.entity';
@@ -26,7 +18,7 @@ export default class Transaction extends ValidableEntity {
   @PrimaryGeneratedColumn({ type: 'integer' })
   id: number;
 
-  @ManyToOne(() => User, user => user.transactions)
+  @ManyToOne(() => User, (user) => user.transactions)
   @Index()
   user: User;
 

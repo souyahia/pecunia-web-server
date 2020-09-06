@@ -1,17 +1,19 @@
 import express from 'express';
-import registerRoutes from './routes';
+import bodyParser from 'body-parser';
 import logger from './logger';
+import { pingRouter, usersRouter, endpointErrorRouter } from './routers';
 import { logMiddleware, errorhandlerMiddleware } from './middleware';
-import { errorController } from './controllers';
 
 logger.debug('Creating Express app...');
 const app = express();
 
 app.use(logMiddleware);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-registerRoutes(app);
-
-app.all('*', errorController.badEndPoint);
+app.use(pingRouter);
+app.use(usersRouter);
+app.use(endpointErrorRouter);
 
 if (process.env.NODE_ENV === 'development') {
   app.use(errorhandlerMiddleware);

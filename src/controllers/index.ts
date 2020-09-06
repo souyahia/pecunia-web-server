@@ -1,5 +1,5 @@
 import * as pingController from './ping.controller';
-import * as errorController from './error.controller';
-import * as devController from './dev.controller';
+import * as usersController from './users.controller';
+import * as endpointErrorController from './endpointError.controller';
 
-export { pingController, errorController, devController };
+export { pingController, usersController, endpointErrorController };

@@ -3,5 +3,15 @@
   "version": "0.0.1",
   "description": "Express web server for the Pecunia app",
   "title": "Pecunia API Doc",
-  "url" : "https://localhost"
+  "url" : "https://localhost",
+  "template": {
+    "forceLanguage": "en"
+  },
+  "order": [
+    "Ping",
+    "GetPing",
+    "Users",
+    "GetUsers",
+    "CreateUser"
+  ]
 }

@@ -1,4 +1,5 @@
-export type TrnType = 'CREDIT'
+export type TrnType =
+  | 'CREDIT'
   | 'DEBIT'
   | 'INT'
   | 'DIV'
@@ -35,5 +36,5 @@ export const TRNTYPES = [
   'DIRECTDEBIT',
   'REPEATPMT',
   'HOLD',
-  'OTHER'
+  'OTHER',
 ];
