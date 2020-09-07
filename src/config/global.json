@@ -13,5 +13,10 @@
     "Level": "warn",
     "Stream": "bunyan-debug-stream",
     "ShowHeaders": false
-  }
+  },
+  "Admin": {
+    "Email": "",
+    "Password": ""
+  },
+  "JWT_SECRET_KEY": ""
 }

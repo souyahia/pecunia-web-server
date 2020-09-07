@@ -10,6 +10,8 @@
   "order": [
     "Ping",
     "GetPing",
+    "Auth",
+    "LogIn",
     "Users",
     "GetUsers",
     "CreateUser"

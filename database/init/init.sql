@@ -3,7 +3,8 @@ USE pecunia_db;
 CREATE TABLE IF NOT EXISTS Users (
   id NVARCHAR(255) NOT NULL,
   email NVARCHAR(255) NOT NULL,
-  password NVARCHAR(30) NOT NULL,
+  password NVARCHAR(255) NOT NULL,
+  role NVARCHAR(5) NOT NULL,
   PRIMARY KEY (id)
 ) COMMENT='Users accounts table.';
 

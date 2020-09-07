@@ -1,9 +1,9 @@
-import express from 'express';
+import { Router } from 'express';
 import { body } from 'express-validator';
 import { usersController } from '../controllers';
 import { paramsValidatorMiddleware } from '../middleware';
 
-const usersRouter = express.Router();
+const usersRouter = Router();
 
 /**
  * @api { get } /users Get all users.
