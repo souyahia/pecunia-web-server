@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import app from './app';
 import config from './config';
 import logger from './logger';
-import connectDB from './database';
+import { connectDB } from './database';
 import { Auth } from './auth';
 
 logger.debug('Initializing database connection...');

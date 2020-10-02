@@ -7,7 +7,7 @@ import {
   JoinTable,
   Index,
 } from 'typeorm';
-import { Length, IsDate, IsNumber, IsString, IsOptional, IsArray, IsIn } from 'class-validator';
+import { Length, IsDate, IsNumber, IsString, IsOptional, IsIn } from 'class-validator';
 import ValidableEntity from './validableEntity';
 import User from './user.entity';
 import Category from './category.entity';
@@ -43,7 +43,6 @@ export default class Transaction extends ValidableEntity {
 
   @ManyToMany(() => Category)
   @JoinTable({ name: 'TransactionCategories' })
-  @IsArray()
   categories: Category[];
 
   @Column({ type: 'varchar', length: 255, nullable: true })

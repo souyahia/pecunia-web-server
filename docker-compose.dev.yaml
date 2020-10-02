@@ -20,7 +20,7 @@ services:
       Logger__ShowHeaders: "true"
       Admin__Email: "admin@email.com"
       Admin__Password: "gi:NyUkP.5_5S3VW%AWeZJD_7q&3qt"
-      JWT_SECRET_KEY: "v[tn;A_S6NrUb=fHX%yu*3[HUkkn+8McYJLC*5RVTi4jY)P8fqt7xcr+{_5hXU]rffiDuL6T;bq38kF%f-}bE{dMd6VZ&QrgLhuGSP#HWxmP4F2Cc&.Rn2Fdv4U@=$e2mTY.UW2KP.z]U*}5w*,yQMfQ*-C5=-9[LCa9@*Z5cWA}UK(yUWxD=x}]j;;AG)(B=&kYq[$D(H_WCU)v&GrrL-?E_+7zkNYjVh#v-!@J+ke7NPC&v@CS?bAu*z#!QQ.]"
+      JWT_SECRET_KEY: "v[tn;A_S6NrUb=fHX%yu*3[HUkkn+8McYJLC*5RVTi4jY)P8fqt7xcr+{_5hXU]rffiDuL6T;bq38kF%f-}bE{dMd6VZ&QrgLhuGSP#HWxmP4F2Cc&.Rn2Fdv4U@=ue2mTY.UW2KP.z]U*}5w*,yQMfQ*-C5=-9[LCa9@*Z5cWA}UK(yUWxD=x}]j;;AG)(B=&kYq[-D(H_WCU)v&GrrL-?E_+7zkNYjVh#v-!@J+ke7NPC&v@CS?bAu*z#!QQ.]"
     ports:
       - "3005:3005"
     volumes:

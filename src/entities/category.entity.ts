@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, ManyToMany } from 'typeorm';
-import { Length, IsString, IsArray } from 'class-validator';
+import { Length, IsString } from 'class-validator';
 import ValidableEntity from './validableEntity';
 import Keyword from './keyword.entity';
 import User from './user.entity';
@@ -19,7 +19,6 @@ export default class Category extends ValidableEntity {
   name: string;
 
   @OneToMany(() => Keyword, (keyword) => keyword.category)
-  @IsArray()
   keywords: Keyword[];
 
   @ManyToMany(() => Transaction, (transaction) => transaction.categories)

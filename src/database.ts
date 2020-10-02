@@ -1,9 +1,11 @@
-import { createConnection, ConnectionOptions } from 'typeorm';
+import { createConnection, ConnectionOptions, Connection } from 'typeorm';
 import config from './config';
 import logger from './logger';
 import { Category, Keyword, Transaction, User } from './entities';
 
-export default async function connectDB(): Promise<void> {
+let connectionEntity: Connection = null;
+
+export async function connectDB(): Promise<void> {
   const connectOptions: ConnectionOptions = {
     type: 'mysql',
     host: config.get('Database:Host') as string,
@@ -21,6 +23,10 @@ export default async function connectDB(): Promise<void> {
   logger.debug(`- USERNAME : ${connectOptions.username}`);
   logger.debug(`- PASSWORD : ${connectOptions.password}`);
   logger.debug(`- DATABASE : ${connectOptions.database}`);
-  const connection = await createConnection(connectOptions);
-  await connection.synchronize(true);
+  connectionEntity = await createConnection(connectOptions);
+  await connectionEntity.synchronize(true);
+}
+
+export async function disconnectDB(): Promise<void> {
+  await connectionEntity.close();
 }

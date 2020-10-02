@@ -6,6 +6,7 @@ import JWTPayload from './jwtPayload.model';
 import Credentials from './credentials.model';
 import config from '../config';
 import { User } from '../entities';
+import { UserRole } from '.';
 
 const NCONF_JWT_SECRET_KEY = 'JWT_SECRET_KEY';
 
@@ -59,7 +60,7 @@ export async function addDefaultAdminAccount(): Promise<User> {
   admin.id = v4();
   admin.email = config.get('Admin:Email');
   admin.password = await encryptPassword(config.get('Admin:Password'));
-  admin.role = 'ADMIN';
+  admin.role = UserRole.Admin;
   admin.categories = [];
   admin.transactions = [];
   await admin.validate();

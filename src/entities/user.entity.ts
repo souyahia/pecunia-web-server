@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
-import { Length, IsString, IsArray, IsEmail, IsUUID, IsIn } from 'class-validator';
+import { Length, IsString, IsEmail, IsUUID, IsIn } from 'class-validator';
 import ValidableEntity from './validableEntity';
 import Transaction from './transaction.entity';
 import Categories from './category.entity';
@@ -28,10 +28,8 @@ export default class User extends ValidableEntity {
   role: string;
 
   @OneToMany(() => Transaction, (transaction) => transaction.user)
-  @IsArray()
   transactions: Transaction[];
 
   @OneToMany(() => Categories, (category) => category.user)
-  @IsArray()
   categories: Categories[];
 }

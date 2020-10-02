@@ -4,15 +4,41 @@ services:
   pecunia-web-server:
     build:
       context: ./
-    container_name: pecunia-ws-container
+    container_name: pecunia-web-server
+    restart: "no"
     environment: 
+      DB_TIMEOUT: 60
       NODE_ENV: test
-      coverage: "true"
       Server__Port: 3005
+      Database__Host: "pecunia-db"
+      Database__Port: 3306
+      Database__User: "user"
+      Database__Password: "password"
+      Database__Database: "pecunia_db"
       Logger__Level: "info"
       Logger__Stream: "bunyan-debug-stream"
-      Logger__ShowHeaders: "false"
+      Logger__ShowHeaders: "true"
+      Admin__Email: "admin@email.com"
+      Admin__Password: "@m-BMUR(B=H:8MVSF/8V,@6bu#/-yw"
+      JWT_SECRET_KEY: "kEyg%{{--9[W&u;?g#bMi?K%;Jjcm9]y496xRVTF=Mb%:{6gSrr-X/+Y%E@%u6U2H+;BBwE33yQDXYi?kYJ3+JwwPuX*/8D@mg/i(%j&pBF/=L,V96#m(FmA5fBT:xp{wYhG;CEcqUbd@@HXZ2dx2f*g5Wx%M3:;B.gu%iu/U8?LwDj.MUv[wG(Z,]Z]ErF{Yu9QWx(}H]i}2.7iGj/BY*w%gk{VQY@)/353?[U*)S@)*M-W3tk}D*hPRiA:ybGE"
+      coverage: "true"
     ports:
       - "3005:3005"
     volumes:
       - "./:/home/node/app"
+      - /home/node/app/node_modules/
+
+  pecunia-db:
+    image: mysql:5.7.31
+    container_name: pecunia-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pecunia_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/init:/docker-entrypoint-initdb.d
+      # - ./database/data:/var/lib/mysql
