@@ -23,7 +23,7 @@ export default function getSearchValidator(fields: string[]): ValidationChain {
         if (i % 2 === 0) {
           if (!fields.includes(search[i])) {
             throw new Error(
-              `Fields must be included in the following values : ${JSON.stringify(fields)}.`
+              `Fields must be included in the following values : ${JSON.stringify(fields)}.`,
             );
           }
         } else {

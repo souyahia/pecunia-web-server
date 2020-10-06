@@ -53,7 +53,7 @@ describe('Authentication module', () => {
       Auth.validateCredentials({
         email: 'unknownEmail@mail.com',
         password: validPassword,
-      })
+      }),
     ).rejects.toBeInstanceOf(Error);
     done();
   });
@@ -63,7 +63,7 @@ describe('Authentication module', () => {
       Auth.validateCredentials({
         email: validEmail,
         password: 'invalid-password',
-      })
+      }),
     ).rejects.toBeInstanceOf(Error);
     done();
   });

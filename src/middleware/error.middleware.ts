@@ -7,7 +7,7 @@ export default function errorHandlerMiddleware(
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void {
   logger.error(err);
   res.status(500).json({ message: 'Internal Server Error' });

@@ -23,7 +23,7 @@ export default function getSortValidator(fields: string[]): ValidationChain {
         if (i % 2 === 0) {
           if (!fields.includes(sort[i])) {
             throw new Error(
-              `Fields must be included in the following values : ${JSON.stringify(fields)}.`
+              `Fields must be included in the following values : ${JSON.stringify(fields)}.`,
             );
           }
         } else if (sort[i] !== 'ASC' && sort[i] !== 'DESC') {

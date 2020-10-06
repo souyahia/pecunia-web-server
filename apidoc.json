@@ -15,6 +15,9 @@
     "LogIn",
     "Users",
     "GetUsers",
-    "CreateUser"
+    "GetUser",
+    "CreateUser",
+    "UpdateUser",
+    "DeleteUser"
   ]
 }

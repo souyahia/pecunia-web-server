@@ -92,7 +92,7 @@ usersRouter.get(
   paramsValidatorMiddleware,
   authMiddleware,
   adminMiddleware,
-  asyncWraper(usersController.getUsers)
+  asyncWraper(usersController.getUsers),
 );
 
 /**
@@ -114,7 +114,7 @@ usersRouter.get(
  *    {
  *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
  *      "email": "john.doe@mail.com",
- *      "password": "johndoe1998",
+ *      "password": "$2b$10$rZIqIwmUmdOB12ECEinywu6UsH0HW06YwbeVX9T0yQBnHWWDKor6m",
  *      "role": "USER"
  *    }
  *
@@ -175,7 +175,82 @@ usersRouter.post(
   paramsValidatorMiddleware,
   authMiddleware,
   adminMiddleware,
-  asyncWraper(usersController.createUser)
+  asyncWraper(usersController.createUser),
+);
+
+/**
+ * @api { get } /users/:userId Get a User information.
+ * @apiName GetUser
+ * @apiGroup Users
+ *
+ * @apiParam (URL Parameters) { String } userId The ID of the user to delete.
+ *
+ * @apiSuccess (200 OK) { String } id       The ID of the created user.
+ * @apiSuccess (200 OK) { String } email    The email of the created user.
+ * @apiSuccess (200 OK) { String } password The encrypted password of the created user.
+ * @apiSuccess (200 OK) { String } role     The role of the created user, either "ADMIN" or "USER".
+ *
+ * @apiSuccessExample Success Response
+ *    HTTP/1.1 200 OK
+ *    {
+ *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
+ *      "email": "john.doe@mail.com",
+ *      "password": "$2b$10$rZIqIwmUmdOB12ECEinywu6UsH0HW06YwbeVX9T0yQBnHWWDKor6m",
+ *      "role": "USER"
+ *    }
+ *
+ * @apiError (404 Not Found) { String } message The error message.
+ *
+ * @apiErrorExample User ID not found.
+ *    HTTP/1.1 404 Not Found
+ *    {
+ *      "message": "User ID not found."
+ *    }
+ *
+ * @apiError (403 Forbidden) { String } message The error message.
+ *
+ * @apiErrorExample Insufficient authorization to get user info.
+ *    HTTP/1.1 403 Forbidden
+ *    {
+ *      "message": "Users without administrator rights can only get their own user info."
+ *    }
+ *
+ * @apiError (401 Unauthorized) { String } message The error message.
+ *
+ * @apiErrorExample Invalid JSON Web Token.
+ *    HTTP/1.1 401 Unauthorized
+ *    {
+ *      "message": "Invalid token."
+ *    }
+ *
+ * @apiError (400 Bad Request) { String }   message         The error message.
+ * @apiError (400 Bad Request) { Object[] } errors          Errors in the request parameters.
+ * @apiError (400 Bad Request) { String }   errors.msg      Message of the parameter error.
+ * @apiError (400 Bad Request) { String }   errors.param    Name of the parameter that caused the error.
+ * @apiError (400 Bad Request) { String }   errors.location Location of the parameter that caused the error.
+ * @apiError (400 Bad Request) { any }      [errors.value]  Value of the parameter that caused the error.
+ *
+ * @apiErrorExample Invalid request parameters.
+ *    HTTP/1.1 400 Bad Request
+ *    {
+ *      "message": "Invalid request parameters.",
+ *      "errors": [
+ *        {
+ *          "value": "test",
+ *          "msg": "Invalid value",
+ *          "param": "userId",
+ *          "location": "params"
+ *        }
+ *      ]
+ *    }
+ *
+ */
+usersRouter.get(
+  '/users/:userId',
+  [Validators.authToken, param('userId').isUUID(4)],
+  paramsValidatorMiddleware,
+  authMiddleware,
+  asyncWraper(usersController.getUser),
 );
 
 /**
@@ -199,7 +274,7 @@ usersRouter.post(
  *    {
  *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
  *      "email": "john.doe@mail.com",
- *      "password": "johndoe1998",
+ *      "password": "$2b$10$rZIqIwmUmdOB12ECEinywu6UsH0HW06YwbeVX9T0yQBnHWWDKor6m",
  *      "role": "USER"
  *    }
  *
@@ -266,7 +341,7 @@ usersRouter.patch(
   ],
   paramsValidatorMiddleware,
   authMiddleware,
-  asyncWraper(usersController.updateUser)
+  asyncWraper(usersController.updateUser),
 );
 
 /**
@@ -274,7 +349,7 @@ usersRouter.patch(
  * @apiName DeleteUser
  * @apiGroup Users
  *
- * @apiParam (URL Parameters) { String } userId    The ID of the user to delete.
+ * @apiParam (URL Parameters) { String } userId The ID of the user to delete.
  *
  * @apiSuccess (200 OK) { String } message  The message response.
  * @apiSuccess (200 OK) { String } affected The number of deleted Users (should always be equal to 1).
@@ -338,7 +413,7 @@ usersRouter.delete(
   paramsValidatorMiddleware,
   authMiddleware,
   adminMiddleware,
-  asyncWraper(usersController.deleteUser)
+  asyncWraper(usersController.deleteUser),
 );
 
 export default usersRouter;

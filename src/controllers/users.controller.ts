@@ -13,6 +13,29 @@ export async function getUsers(req: Request, res: Response): Promise<void> {
   res.status(200).json({ values, count });
 }
 
+export async function getUser(req: AuthRequest, res: Response): Promise<void> {
+  const { userId } = req.params;
+  if (req.payload.role !== UserRole.Admin && userId !== req.payload.id) {
+    res.status(403).json({
+      message: 'Users without administrator rights can only get their own user info.',
+    });
+  } else {
+    const entityManager = getManager();
+    const user = await entityManager.findOne(User, {
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) {
+      res.status(404).json({
+        message: 'User ID not found.',
+      });
+    } else {
+      res.status(200).send(user);
+    }
+  }
+}
+
 export async function createUser(req: Request, res: Response): Promise<void> {
   const newUser = new User();
   newUser.id = v4();
