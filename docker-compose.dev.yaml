@@ -41,3 +41,14 @@ services:
     volumes:
       - ./database/data:/var/lib/mysql
       - ./database/init:/docker-entrypoint-initdb.d
+
+  pecunia-adminer:
+    container_name: pecunia-adminer
+    image: adminer:4.7.7
+    restart: always
+    logging:
+      driver: none
+    environment:
+      ADMINER_DEFAULT_SERVER: pecunia-db
+    ports:
+      - 8080:8080

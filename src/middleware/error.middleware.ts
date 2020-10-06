@@ -1,11 +1,14 @@
-import { Request } from 'express';
-import errorhandler from 'errorhandler';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Request, Response, NextFunction } from 'express';
 import logger from '../logger';
 
-function log(err: Error, str: string, req: Request): void {
-  logger.error(`Error in ${req.method} ON ${req.url}`, err);
+// In this case, it is needed to specify the next parameter even if it is not used.
+export default function errorHandlerMiddleware(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
+  logger.error(err);
+  res.status(500).json({ message: 'Internal Server Error' });
 }
-
-const errorhandlerMiddleware = errorhandler({ log });
-
-export default errorhandlerMiddleware;

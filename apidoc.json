@@ -1,7 +1,7 @@
 {
   "name": "Pecunia Web Server",
   "version": "0.0.1",
-  "description": "Express web server for the Pecunia app",
+  "description": "Express web server for the Pecunia app.",
   "title": "Pecunia API Doc",
   "url" : "https://localhost",
   "template": {
@@ -11,6 +11,7 @@
     "Ping",
     "GetPing",
     "Auth",
+    "SignIn",
     "LogIn",
     "Users",
     "GetUsers",
