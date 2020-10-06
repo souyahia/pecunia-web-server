@@ -92,7 +92,7 @@ usersRouter.get(
   paramsValidatorMiddleware,
   authMiddleware,
   adminMiddleware,
-  asyncWraper(usersController.getUsers),
+  asyncWraper(usersController.getUsers)
 );
 
 /**
@@ -175,14 +175,14 @@ usersRouter.post(
   paramsValidatorMiddleware,
   authMiddleware,
   adminMiddleware,
-  asyncWraper(usersController.createUser),
+  asyncWraper(usersController.createUser)
 );
 
 /**
  * @api { patch } /users/:userId Update a user information.
  * @apiName UpdateUser
  * @apiGroup Users
- * 
+ *
  * @apiParam (URL Parameters) { String } userId The ID of the user to update.
  *
  * @apiParam (Body Parameters) { String } [email]    The new email of the user.
@@ -218,7 +218,7 @@ usersRouter.post(
  *    {
  *      "message": "Users can not set themselves as administrator."
  *    }
- * 
+ *
  * @apiErrorExample Insufficient authorization to update user.
  *    HTTP/1.1 403 Forbidden
  *    {
@@ -266,7 +266,7 @@ usersRouter.patch(
   ],
   paramsValidatorMiddleware,
   authMiddleware,
-  asyncWraper(usersController.updateUser),
+  asyncWraper(usersController.updateUser)
 );
 
 /**
@@ -334,14 +334,11 @@ usersRouter.patch(
  */
 usersRouter.delete(
   '/users/:userId',
-  [
-    Validators.authToken,
-    param('userId').isUUID(4),
-  ],
+  [Validators.authToken, param('userId').isUUID(4)],
   paramsValidatorMiddleware,
   authMiddleware,
   adminMiddleware,
-  asyncWraper(usersController.deleteUser),
+  asyncWraper(usersController.deleteUser)
 );
 
 export default usersRouter;

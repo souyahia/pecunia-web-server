@@ -1,5 +1,3 @@
 import getQueryOptions from './getQueryOptions.utils';
 
-export {
-  getQueryOptions,
-}
+export { getQueryOptions };

@@ -71,12 +71,9 @@ const authRouter = Router();
  */
 authRouter.post(
   '/auth/signin',
-  [
-    body('email').isEmail(),
-    body('password').isString().isLength({ min: 8, max: 30 }),
-  ],
+  [body('email').isEmail(), body('password').isString().isLength({ min: 8, max: 30 })],
   paramsValidatorMiddleware,
-  asyncWraper(authController.signIn),
+  asyncWraper(authController.signIn)
 );
 
 /**
@@ -129,12 +126,9 @@ authRouter.post(
  */
 authRouter.post(
   '/auth/login',
-  [
-    body('email').isEmail(),
-    body('password').isString().notEmpty(),
-  ],
+  [body('email').isEmail(), body('password').isString().notEmpty()],
   paramsValidatorMiddleware,
-  asyncWraper(authController.logIn),
+  asyncWraper(authController.logIn)
 );
 
 export default authRouter;

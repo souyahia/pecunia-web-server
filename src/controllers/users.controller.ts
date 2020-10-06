@@ -53,7 +53,11 @@ export async function updateUser(req: AuthRequest, res: Response): Promise<void>
     res.status(403).json({
       message: 'Users without administrator rights can only update their own user info.',
     });
-  } else if (req.body.role && req.body.role === UserRole.Admin && req.payload.role !== UserRole.Admin) {
+  } else if (
+    req.body.role &&
+    req.body.role === UserRole.Admin &&
+    req.payload.role !== UserRole.Admin
+  ) {
     res.status(403).json({
       message: 'Users can not set themselves as administrator.',
     });
@@ -63,7 +67,9 @@ export async function updateUser(req: AuthRequest, res: Response): Promise<void>
     updatedUser.role = req.body.role ?? lookupUser.role;
     if (req.body.password) {
       updatedUser.password = await encryptPassword(req.body.password);
-    } else { updatedUser.password = lookupUser.password; }
+    } else {
+      updatedUser.password = lookupUser.password;
+    }
     await updatedUser.validate();
     await entityManager.update(User, { id: userId }, updatedUser);
     const result = await entityManager.findOne(User, {
