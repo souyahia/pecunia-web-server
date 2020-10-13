@@ -6,20 +6,21 @@ import { User } from '../../src/entities';
 import { encryptPassword } from '../../src/auth/auth';
 import { connectDB, disconnectDB } from '../../src/database';
 import { UserRole } from '../../src/auth';
+import { clearDB } from '../testHelpers';
 
 const validEmail = 'test@mail.com';
 const validPassword = 'test-password';
 
 describe('Authentication controller', () => {
   beforeAll(async (done) => {
-    await connectDB();
+    const connection = await connectDB();
+    await clearDB(connection);
+
     const validUser = new User();
     validUser.id = v4();
     validUser.email = validEmail;
     validUser.password = await encryptPassword(validPassword);
     validUser.role = UserRole.User;
-    validUser.categories = [];
-    validUser.transactions = [];
     await validUser.validate();
 
     const entityManager = getManager();

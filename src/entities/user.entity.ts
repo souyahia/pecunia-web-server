@@ -19,7 +19,7 @@ export default class User extends ValidableEntity {
 
   @Column({ type: 'nvarchar', length: 255 })
   @IsString()
-  @Length(8, 30)
+  @Length(1, 255)
   password: string;
 
   @Column({ type: 'nvarchar', length: 5 })

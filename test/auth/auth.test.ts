@@ -4,13 +4,15 @@ import { Auth, UserRole, JWTPayload } from '../../src/auth';
 import { connectDB, disconnectDB } from '../../src/database';
 import { User } from '../../src/entities';
 import config from '../../src/config';
+import { clearDB } from '../testHelpers';
 
-const validEmail = 'test2@mail.com';
+const validEmail = 'test@mail.com';
 const validPassword = 'test-password';
 
 describe('Authentication module', () => {
   beforeAll(async (done) => {
-    await connectDB();
+    const connection = await connectDB();
+    await clearDB(connection);
     done();
   });
 
@@ -31,8 +33,6 @@ describe('Authentication module', () => {
     validUser.email = validEmail;
     validUser.password = await Auth.encryptPassword(validPassword);
     validUser.role = UserRole.User;
-    validUser.categories = [];
-    validUser.transactions = [];
     await validUser.validate();
     const entityManager = getManager();
     await entityManager.save(validUser);

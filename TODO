@@ -1,0 +1,33 @@
+keywords controller :
+
+- get /keywords - get all keywords (admin for other users)
+    > for specific user use search ["id", "userId"]
+- post /keywords - create keyword (admin for other user)
+- get /keywords/id - get keyword (admin for other users)
+- patch /keywords/id - update keyword (admin for other users)
+- delete /keywords/id - delete keyword (admin for other users)
+
+>>>>>> GET = tout court
+
+categories controller :
+
+- get /categories - get all categories (admin for other users)
+    > for specific user use search ["id", "userId"]
+- post /categories - create category (admin for other user)
+- get /categories/id - get category (admin for other users)
+- patch /categories/id - update category (admin for other users)
+- delete /categories/id - delete category (admin for other users)
+
+>>>>> GET = WITH KEYWORDS !
+
+transaction controller :
+
+- get /transactions - get all transactions (admin for other users)
+    > for specific user use search ["id", "userId"]
+- post /transactions - create transaction (admin for other user)
+- get /transaction/id - get transaction (admin for other users)
+- patch /transactions/id - update transaction (admin for other users)
+- delete /transactions/id - delete transaction (admin for other users)
+
+>>>> GET = WITH CATEGORIES !
+

@@ -5,7 +5,7 @@ import { Category, Keyword, Transaction, User } from './entities';
 
 let connectionEntity: Connection = null;
 
-export async function connectDB(): Promise<void> {
+export async function connectDB(): Promise<Connection> {
   const connectOptions: ConnectionOptions = {
     type: 'mysql',
     host: config.get('Database:Host') as string,
@@ -25,8 +25,10 @@ export async function connectDB(): Promise<void> {
   logger.debug(`- DATABASE : ${connectOptions.database}`);
   connectionEntity = await createConnection(connectOptions);
   await connectionEntity.synchronize(true);
+  return connectionEntity;
 }
 
-export async function disconnectDB(): Promise<void> {
+export async function disconnectDB(): Promise<Connection> {
   await connectionEntity.close();
+  return connectionEntity;
 }

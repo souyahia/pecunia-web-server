@@ -15,7 +15,7 @@ services:
       Database__User: "user"
       Database__Password: "password"
       Database__Database: "pecunia_db"
-      Logger__Level: "info"
+      Logger__Level: "error"
       Logger__Stream: "bunyan-debug-stream"
       Logger__ShowHeaders: "true"
       Admin__Email: "admin@email.com"

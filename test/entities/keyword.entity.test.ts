@@ -1,5 +1,5 @@
 import { Keyword } from '../../src/entities';
-import assignFields from './assignFields.helper';
+import { assignFields } from '../testHelpers';
 import { EntityValidationError } from '../../src/errors';
 
 const validFields = {
