@@ -1,8 +1,8 @@
 # Pecunia Web Server
 
-<table style="border: none;">
+<table>
   <tbody>
-    <tr>
+    <tr style="border: none;">
       <td style="border: none;">
         <a href="https://travis-ci.com/souyahia/pecunia-web-server">
           <img src="https://travis-ci.com/souyahia/pecunia-web-server.svg?branch=master" alt="Build Status"/>
