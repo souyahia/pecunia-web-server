@@ -1,5 +1,3 @@
-# Pecunia Web Server
-
 <p align="center">
     <a href="https://travis-ci.com/souyahia/pecunia-web-server">
       <img src="https://travis-ci.com/souyahia/pecunia-web-server.svg?branch=master" alt="Build Status"/></a>&emsp;
@@ -9,6 +7,6 @@
       <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"/></a>
 </p>
 
-An Express web server for the Pecunia app.
+# Pecunia Web Server
 
-[//]: # (docker-compose -f ./docker-compose.test.yaml up --abort-on-container-exit --exit-code-from pecunia-web-server)
+An Express web server for the Pecunia app.
