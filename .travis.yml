@@ -1,0 +1,11 @@
+language: node_js
+python:
+  - "3.7"
+
+services:
+  - docker
+
+before_script: sudo apt-get install docker-compose
+
+script:
+  - docker-compose -f ./docker-compose.test.yaml up --abort-on-container-exit --exit-code-from pecunia-web-server
