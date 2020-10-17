@@ -1,19 +1,22 @@
 # Pecunia Web Server
-
+<style>
+  tr { border: none; }
+  td { border: none; }
+</style>
 <table>
   <tbody>
-    <tr style="border: none;">
-      <td style="border: none;">
+    <tr>
+      <td>
         <a href="https://travis-ci.com/souyahia/pecunia-web-server">
           <img src="https://travis-ci.com/souyahia/pecunia-web-server.svg?branch=master" alt="Build Status"/>
         </a>
       </td>
-      <td style="border: none;">
+      <td>
         <a href="https://coveralls.io/github/souyahia/pecunia-web-server?branch=master">
           <img src="https://coveralls.io/repos/github/souyahia/pecunia-web-server/badge.svg?branch=master" alt="Coverage Status"/>
         </a>
       </td>
-      <td style="border: none;">
+      <td>
         <a href="https://github.com/souyahia/pecunia-web-server/blob/master/LICENSE">
           <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"/>
         </a>
