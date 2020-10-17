@@ -1,8 +1,26 @@
 # Pecunia Web Server
 
-[![Build Status](https://travis-ci.com/souyahia/pecunia-web-server.svg?branch=master)](https://travis-ci.com/souyahia/pecunia-web-server)
-
-[![Coverage Status](https://coveralls.io/repos/github/souyahia/pecunia-web-server/badge.svg?branch=master)](https://coveralls.io/github/souyahia/pecunia-web-server?branch=master)
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <a href="https://travis-ci.com/souyahia/pecunia-web-server">
+          <img src="https://travis-ci.com/souyahia/pecunia-web-server.svg?branch=master" alt="Build Status"/>
+        </a>
+      </td>
+      <td>
+        <a href="https://coveralls.io/github/souyahia/pecunia-web-server?branch=master">
+          <img src="https://coveralls.io/repos/github/souyahia/pecunia-web-server/badge.svg?branch=master" alt="Coverage Status"/>
+        </a>
+      </td>
+      <td>
+        <a href="https://github.com/souyahia/pecunia-web-server/blob/master/LICENSE">
+          <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"/>
+        </a>
+      </td>
+  </tr>
+  </tbody>
+</table>
 
 An Express web server for the Pecunia app.
 
