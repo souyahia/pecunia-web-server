@@ -24,7 +24,7 @@ export async function connectDB(): Promise<Connection> {
   logger.debug(`- PASSWORD : ${connectOptions.password}`);
   logger.debug(`- DATABASE : ${connectOptions.database}`);
   connectionEntity = await createConnection(connectOptions);
-  await connectionEntity.synchronize(true);
+  // await connectionEntity.synchronize(true);
   return connectionEntity;
 }
 
