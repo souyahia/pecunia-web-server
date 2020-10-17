@@ -9,7 +9,7 @@ services:
     environment: 
       DB_TIMEOUT: 60
       NODE_ENV: test
-      CI: true
+      CI: "true"
       Server__Port: 3005
       Database__Host: "pecunia-db"
       Database__Port: 3306
