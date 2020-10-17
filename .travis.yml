@@ -26,3 +26,6 @@ script:
   - docker version
   - docker-compose version
   - docker-compose -f ./docker-compose.ci.yaml up --abort-on-container-exit --exit-code-from pecunia-web-server
+
+after_success:
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
