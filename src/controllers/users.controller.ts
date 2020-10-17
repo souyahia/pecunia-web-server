@@ -86,6 +86,7 @@ export async function updateUser(req: AuthRequest, res: Response): Promise<void>
     });
   } else {
     const updatedUser = new User();
+    updatedUser.id = userId;
     updatedUser.email = req.body.email ?? lookupUser.email;
     updatedUser.role = req.body.role ?? lookupUser.role;
     if (req.body.password) {
