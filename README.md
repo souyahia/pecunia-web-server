@@ -10,3 +10,5 @@
 # Pecunia Web Server
 
 An Express web server for the Pecunia app.
+
+The complete README file will be written shortly...
