@@ -6,11 +6,15 @@ node_js:
   - 13.14.0
 
 services:
-    - docker
+  - docker
 
 env: 
-    global:
-        - DOCKER_COMPOSE_VERSION=1.26.2
+  global:
+    - DOCKER_COMPOSE_VERSION=1.26.2
+
+branches:
+  only:
+    - master
 
 before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -26,6 +30,7 @@ script:
   - docker version
   - docker-compose version
   - docker-compose -f ./docker-compose.test.yaml up --abort-on-container-exit --exit-code-from pecunia-web-server
+  - npm run lint
 
 after_success:
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
