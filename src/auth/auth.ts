@@ -49,9 +49,6 @@ export function signPayload(payload: JWTPayload): { token: string; expiresIn: st
 
 export function verifyToken(token: string): JWTPayload {
   const payload = verify(token, config.get(NCONF_JWT_SECRET_KEY));
-  if (typeof payload === 'string') {
-    return JSON.parse(payload) as JWTPayload;
-  }
   return payload as JWTPayload;
 }
 
