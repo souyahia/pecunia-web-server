@@ -22,8 +22,8 @@ export async function getKeywords(req: AuthRequest, res: Response): Promise<void
     });
   } else {
     const findOptions: FindManyOptions<Keyword> = getQueryOptions(req);
-    const [values, count] = await entityManager.findAndCount(Keyword, findOptions);
-    res.status(200).json({ values, count });
+    const values = await entityManager.find(Keyword, findOptions);
+    res.status(200).json({ values });
   }
 }
 
