@@ -16,59 +16,59 @@ import { TRNTYPES, ISO_4217_CURRENCY_CODES } from '../business';
 @Entity({ name: 'Transactions' })
 export default class Transaction extends ValidableEntity {
   @PrimaryGeneratedColumn({ type: 'integer' })
-  id: number;
+  id?: number;
 
   @ManyToOne(() => User, (user) => user.transactions)
   @Index()
-  user: User;
+  user?: User;
 
   @Column({ type: 'datetime' })
   @IsDate()
-  date: Date;
+  date?: Date;
 
   @Column({ type: 'float' })
   @IsNumber({ allowNaN: false, allowInfinity: false })
-  amount: number;
+  amount?: number;
 
   @Column({ type: 'nvarchar', length: 255, nullable: true })
   @IsOptional()
   @IsString()
   @Length(0, 255)
-  name: string;
+  name?: string;
 
   @Column({ type: 'varchar', length: 11 })
   @IsString()
   @IsIn(TRNTYPES)
-  type: string;
+  type?: string;
 
   @ManyToMany(() => Category)
   @JoinTable({ name: 'TransactionCategories' })
-  categories: Category[];
+  categories?: Category[];
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   @IsOptional()
   @IsString()
   @Length(0, 255)
-  publicId: string;
+  publicId?: string;
 
   @Column({ type: 'varchar', length: 3 })
   @IsString()
   @IsIn(ISO_4217_CURRENCY_CODES)
-  currency: string;
+  currency?: string;
 
   @Column({ type: 'float' })
   @IsNumber({ allowNaN: false, allowInfinity: false })
-  balance: number;
+  balance?: number;
 
   @Column({ type: 'varchar', length: 9, nullable: true })
   @IsOptional()
   @IsString()
   @Length(0, 9)
-  bankId: string;
+  bankId?: string;
 
   @Column({ type: 'varchar', length: 22, nullable: true })
   @IsOptional()
   @IsString()
   @Length(0, 22)
-  accountId: string;
+  accountId?: string;
 }

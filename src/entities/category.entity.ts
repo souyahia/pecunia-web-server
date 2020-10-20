@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, ManyToMany } from 'typeorm';
-import { Length, IsString } from 'class-validator';
+import { Length, IsString, IsDefined } from 'class-validator';
 import ValidableEntity from './validableEntity';
 import Keyword from './keyword.entity';
 import User from './user.entity';
@@ -8,19 +8,23 @@ import Transaction from './transaction.entity';
 @Entity({ name: 'Categories' })
 export default class Category extends ValidableEntity {
   @PrimaryGeneratedColumn({ type: 'integer' })
-  id: number;
+  id?: number;
 
   @ManyToOne(() => User, (user) => user.transactions)
-  user: User;
+  user?: User;
 
   @Column({ type: 'nvarchar', length: 255 })
   @IsString()
   @Length(0, 255)
-  name: string;
+  name?: string;
+
+  @Column() // Do not specify column type, to automatically convert TINYINT to boolean
+  @IsDefined()
+  matchAll?: boolean;
 
   @OneToMany(() => Keyword, (keyword) => keyword.category)
-  keywords: Keyword[];
+  keywords?: Keyword[];
 
   @ManyToMany(() => Transaction, (transaction) => transaction.categories)
-  transactions: Transaction[];
+  transactions?: Transaction[];
 }

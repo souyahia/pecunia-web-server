@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS Categories (
   id INTEGER AUTO_INCREMENT NOT NULL,
   userId NVARCHAR(255) NOT NULL,
   name NVARCHAR(255) NOT NULL,
+  matchAll TINYINT(1),
   PRIMARY KEY (id),
   FOREIGN KEY (userId) REFERENCES Users(id)
 ) COMMENT='Categories table.';
