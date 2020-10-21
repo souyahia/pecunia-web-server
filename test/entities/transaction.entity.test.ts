@@ -25,7 +25,7 @@ const invalidFields = {
   accountId: 'this-string-is-more-than-22-characters',
 };
 
-describe('Transaction entity', () => {
+describe('Transaction Entity', () => {
   it('shoud not throw when validating a valid entity', () => {
     const transaction = new Transaction();
     assignFields(transaction, validFields);

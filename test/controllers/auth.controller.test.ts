@@ -9,7 +9,7 @@ import { clearDB } from '../testHelpers';
 
 let connection: Connection = null;
 
-describe('Authentication controller', () => {
+describe('Authentication Controller', () => {
   beforeAll(async (done) => {
     connection = await connectDB();
     done();

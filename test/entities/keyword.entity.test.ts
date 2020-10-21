@@ -11,7 +11,7 @@ const invalidFields = {
     'this-string-is-more-than-255-characters-tVWwg3wtqvVKF5EHdZ67GfPjzhrkxJfHCDhWNgNLGq29kP2ziW4icNiTpNNeGKEJhdwvf72ppwTPwafAGqXN3jzbM6bZfLwE7XMXYvtkeVrqDWCpnrjRgGrV62tP4V7PSSLc2dJXq8Aftp7xvEAT3qj7vrqAg3umxNg6JdPPhS7YA5zQzrDv7rgQAQywmbqPVWfGEQaHVtthV98LrbPKPQKwi',
 };
 
-describe('Keyword entity', () => {
+describe('Keyword Entity', () => {
   it('shoud not throw when validating a valid entity', () => {
     const keyword = new Keyword();
     assignFields(keyword, validFields);

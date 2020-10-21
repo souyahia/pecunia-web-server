@@ -11,7 +11,7 @@ const invalidFields = {
     'this-string-is-more-than-255-characters-b7y2HFMGaCrJCixquNW4v9bfz58bEFQFGeKjqHDU4t8MbAAWLp3G4KBEZiPj9y9XJuTbKZ8WT5tuawDRDR8Ntem9RCCLPeqQeXm73pA3X9dWdRKhdgFbjG5JjKmik2mLdFpD9vt57JBhX79t2WXAYZEZMuPz36Hp2GMZiVx5Zm9arbEfuJK7AMe885CyexTP5D78JKEUQ7cP9KiiifGMRCjQA',
 };
 
-describe('Category entity', () => {
+describe('Category Entity', () => {
   it('shoud not throw when validating a valid entity', () => {
     const category = new Category();
     assignFields(category, validFields);

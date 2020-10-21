@@ -19,7 +19,7 @@ const invalidFields = {
   role: 'TEST',
 };
 
-describe('User entity', () => {
+describe('User Entity', () => {
   it('shoud not throw when validating a valid entity', () => {
     const user = new User();
     assignFields(user, validFields);

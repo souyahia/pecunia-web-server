@@ -22,7 +22,7 @@ const userToken = Auth.signPayload({
 
 let connection: Connection = null;
 
-describe('Users controller', () => {
+describe('Users Controller', () => {
   beforeAll(async (done) => {
     connection = await connectDB();
     done();
