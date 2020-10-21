@@ -18,6 +18,12 @@
     "GetUser",
     "CreateUser",
     "UpdateUser",
-    "DeleteUser"
+    "DeleteUser",
+    "Keywords",
+    "GetKeywords",
+    "GetKeyword",
+    "CreateKeyword",
+    "UpdateKeyword",
+    "DeleteKeyword"
   ]
 }

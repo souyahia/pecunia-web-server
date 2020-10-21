@@ -10,8 +10,8 @@ const authRouter = Router();
  * @apiName SignIn
  * @apiGroup Auth
  *
- * @apiParam (Body Parameters) { String } email    The email of the user.
- * @apiParam (Body Parameters) { String } password The password of the user.
+ * @apiParam (Body Parameters) { String } email    The email of the User.
+ * @apiParam (Body Parameters) { String } password The password of the User.
  *
  * @apiSuccess (201 Created) { String } message                 The server's response message.
  * @apiSuccess (201 Created) { Object } user                    The new User created.
@@ -81,8 +81,8 @@ authRouter.post(
  * @apiName LogIn
  * @apiGroup Auth
  *
- * @apiParam (Body Parameters) { String } email    The email of the user.
- * @apiParam (Body Parameters) { String } password The password of the user.
+ * @apiParam (Body Parameters) { String } email    The email of the User.
+ * @apiParam (Body Parameters) { String } password The password of the User.
  *
  * @apiSuccess (200 OK) { String }   message   The server's response message.
  * @apiSuccess (200 OK) { String }   token     The JWT Token.

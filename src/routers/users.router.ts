@@ -13,7 +13,7 @@ import { USER_ROLES } from '../auth';
 const usersRouter = Router();
 
 /**
- * @api { get } /users Get all users.
+ * @api { get } /users Get all Users.
  * @apiName GetUsers
  * @apiGroup Users
  *
@@ -26,7 +26,7 @@ const usersRouter = Router();
  * @apiSuccess (200 OK) { String } values.id       The id of the User (uuid v4).
  * @apiSuccess (200 OK) { String } values.email    The email of the User.
  * @apiSuccess (200 OK) { String } values.password The encrypted password of the User.
- * @apiSuccess (200 OK) { String } values.role     The role of the user, either "ADMIN" or "USER".
+ * @apiSuccess (200 OK) { String } values.role     The role of the User, either "ADMIN" or "USER".
  *
  * @apiSuccessExample Success Response:
  *    HTTP/1.1 200 OK
@@ -100,14 +100,14 @@ usersRouter.get(
  * @apiName CreateUser
  * @apiGroup Users
  *
- * @apiParam (Body Parameters) { String } email    The email of the user.
- * @apiParam (Body Parameters) { String } password The password of the user.
- * @apiParam (Body Parameters) { String } role     The role of the user.
+ * @apiParam (Body Parameters) { String } email    The email of the User.
+ * @apiParam (Body Parameters) { String } password The password of the User.
+ * @apiParam (Body Parameters) { String } role     The role of the User.
  *
- * @apiSuccess (201 Created) { String } id       The ID of the created user.
- * @apiSuccess (201 Created) { String } email    The email of the created user.
- * @apiSuccess (201 Created) { String } password The encrypted password of the created user.
- * @apiSuccess (201 Created) { String } role     The role of the created user, either "ADMIN" or "USER".
+ * @apiSuccess (201 Created) { String } id       The ID of the created User.
+ * @apiSuccess (201 Created) { String } email    The email of the created User.
+ * @apiSuccess (201 Created) { String } password The encrypted password of the created User.
+ * @apiSuccess (201 Created) { String } role     The role of the created User, either "ADMIN" or "USER".
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 201 Created
@@ -183,12 +183,12 @@ usersRouter.post(
  * @apiName GetUser
  * @apiGroup Users
  *
- * @apiParam (URL Parameters) { String } userId The ID of the user.
+ * @apiParam (URL Parameters) { String } userId The ID of the User.
  *
- * @apiSuccess (200 OK) { String } id       The ID of the user.
- * @apiSuccess (200 OK) { String } email    The email of the user.
- * @apiSuccess (200 OK) { String } password The encrypted password of the user.
- * @apiSuccess (200 OK) { String } role     The role of the user, either "ADMIN" or "USER".
+ * @apiSuccess (200 OK) { String } id       The ID of the User.
+ * @apiSuccess (200 OK) { String } email    The email of the User.
+ * @apiSuccess (200 OK) { String } password The encrypted password of the User.
+ * @apiSuccess (200 OK) { String } role     The role of the User, either "ADMIN" or "USER".
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 200 OK
@@ -209,7 +209,7 @@ usersRouter.post(
  *
  * @apiError (403 Forbidden) { String } message The error message.
  *
- * @apiErrorExample Insufficient authorization to get user info.
+ * @apiErrorExample Insufficient authorization to get User info.
  *    HTTP/1.1 403 Forbidden
  *    {
  *      "message": "Users without administrator rights can only get their own user info."
@@ -254,20 +254,20 @@ usersRouter.get(
 );
 
 /**
- * @api { patch } /users/:userId Update a user information.
+ * @api { patch } /users/:userId Update a User information.
  * @apiName UpdateUser
  * @apiGroup Users
  *
- * @apiParam (URL Parameters) { String } userId The ID of the user to update.
+ * @apiParam (URL Parameters) { String } userId The ID of the User to update.
  *
- * @apiParam (Body Parameters) { String } [email]    The new email of the user.
- * @apiParam (Body Parameters) { String } [password] The new password of the user.
- * @apiParam (Body Parameters) { String } [role]     The new role of the user.
+ * @apiParam (Body Parameters) { String } [email]    The new email of the User.
+ * @apiParam (Body Parameters) { String } [password] The new password of the User.
+ * @apiParam (Body Parameters) { String } [role]     The new role of the User.
  *
- * @apiSuccess (200 OK) { String } id       The ID of the updated user.
- * @apiSuccess (200 OK) { String } email    The email of the updated user.
- * @apiSuccess (200 OK) { String } password The encrypted password of the updated user.
- * @apiSuccess (200 OK) { String } role     The role of the updated user, either "ADMIN" or "USER".
+ * @apiSuccess (200 OK) { String } id       The ID of the updated User.
+ * @apiSuccess (200 OK) { String } email    The email of the updated User.
+ * @apiSuccess (200 OK) { String } password The encrypted password of the updated User.
+ * @apiSuccess (200 OK) { String } role     The role of the updated User, either "ADMIN" or "USER".
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 200 OK
@@ -294,7 +294,7 @@ usersRouter.get(
  *      "message": "Users can not set themselves as administrator."
  *    }
  *
- * @apiErrorExample Insufficient authorization to update user.
+ * @apiErrorExample Insufficient authorization to update User.
  *    HTTP/1.1 403 Forbidden
  *    {
  *      "message": "Users without administrator rights can only update their own user info."
@@ -349,7 +349,7 @@ usersRouter.patch(
  * @apiName DeleteUser
  * @apiGroup Users
  *
- * @apiParam (URL Parameters) { String } userId The ID of the user to delete.
+ * @apiParam (URL Parameters) { String } userId The ID of the User to delete.
  *
  * @apiSuccess (200 OK) { String } message  The message response.
  * @apiSuccess (200 OK) { String } affected The number of deleted Users (should always be equal to 1).
