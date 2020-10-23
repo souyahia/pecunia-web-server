@@ -20,7 +20,7 @@ const keywordsRouter = Router();
  * @apiParam (Query Parameters) { String[] } [sort]    Sort for the results in the format : [field, order]. Order are either "ASC" or "DESC". Fields can be the following : "value" or "id".
  * @apiParam (Query Parameters) { String[] } [search]  Filter results by searching Keywords in fields with the format : [field, "Keyword"]. Fields can be the following : "value" or "id".
  *
- * @apiSuccess (200 OK) { User[] } values            Array of Keywords matching the query.
+ * @apiSuccess (200 OK) { Keyword[] } values            Array of Keywords matching the query.
  * @apiSuccess (200 OK) { int }    values.id         The id of the Keyword.
  * @apiSuccess (200 OK) { String } values.value      The value of the Keyword.
  * @apiSuccess (200 OK) { int } values.categoryId    The ID of the Keyword's associated category.
@@ -85,7 +85,7 @@ const keywordsRouter = Router();
  *    }
  */
 keywordsRouter.get(
-  '/users',
+  '/keywords',
   [
     Validators.authToken,
     Validators.range,
@@ -104,7 +104,7 @@ keywordsRouter.get(
  * @apiGroup Keywords
  *
  * @apiParam (Body Parameters) { int } categoryId The category associated with the Keyword.
- * @apiParam (Body Parameters) { String } value   The value of the user.
+ * @apiParam (Body Parameters) { String } value   The value of the Keyword.
  *
  * @apiSuccess (201 Created) { int } id         The ID of the created keyword.
  * @apiSuccess (201 Created) { String } value   The value of the created keyword.

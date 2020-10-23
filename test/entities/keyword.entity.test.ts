@@ -12,10 +12,11 @@ const invalidFields = {
 };
 
 describe('Keyword Entity', () => {
-  it('shoud not throw when validating a valid entity', () => {
+  it('shoud not throw when validating a valid entity', async (done) => {
     const keyword = new Keyword();
     assignFields(keyword, validFields);
-    expect(async () => keyword.validate()).not.toThrow();
+    await expect(keyword.validate()).resolves.not.toThrow();
+    done();
   });
 
   it('should throw an EntityValidationError when validating a Keyword with bad value', async (done) => {

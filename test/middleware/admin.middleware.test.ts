@@ -15,7 +15,7 @@ const invalidPayload: JWTPayload = {
   role: 'USER',
 };
 
-describe('Auth Middleware', () => {
+describe('Admin Middleware', () => {
   it('should call the next route handler when given a valid JWT', () => {
     const next = jest.fn();
     const { req, res } = mockRequestResponse();

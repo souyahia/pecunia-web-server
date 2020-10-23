@@ -20,10 +20,11 @@ const invalidFields = {
 };
 
 describe('User Entity', () => {
-  it('shoud not throw when validating a valid entity', () => {
+  it('shoud not throw when validating a valid entity', async (done) => {
     const user = new User();
     assignFields(user, validFields);
-    expect(async () => user.validate()).not.toThrow();
+    await expect(user.validate()).resolves.not.toThrow();
+    done();
   });
 
   it('should throw an EntityValidationError when validating a User with bad id', async (done) => {
