@@ -6,6 +6,7 @@ import {
   ManyToMany,
   JoinTable,
   Index,
+  JoinColumn,
 } from 'typeorm';
 import { Length, IsDate, IsNumber, IsString, IsOptional, IsIn } from 'class-validator';
 import ValidableEntity from './validableEntity';
@@ -16,19 +17,23 @@ import { TRNTYPES, ISO_4217_CURRENCY_CODES } from '../business';
 @Entity({ name: 'Transactions' })
 export default class Transaction extends ValidableEntity {
   @PrimaryGeneratedColumn({ type: 'integer' })
-  id?: number;
+  id: number;
+
+  @Column({ type: 'nvarchar', nullable: true })
+  userId?: string;
 
   @ManyToOne(() => User, (user) => user.transactions)
+  @JoinColumn({ name: 'userId' })
   @Index()
-  user?: User;
+  user: User;
 
   @Column({ type: 'datetime' })
   @IsDate()
-  date?: Date;
+  date: Date;
 
   @Column({ type: 'float' })
   @IsNumber({ allowNaN: false, allowInfinity: false })
-  amount?: number;
+  amount: number;
 
   @Column({ type: 'nvarchar', length: 255, nullable: true })
   @IsOptional()
@@ -39,11 +44,11 @@ export default class Transaction extends ValidableEntity {
   @Column({ type: 'varchar', length: 11 })
   @IsString()
   @IsIn(TRNTYPES)
-  type?: string;
+  type: string;
 
   @ManyToMany(() => Category)
   @JoinTable({ name: 'TransactionCategories' })
-  categories?: Category[];
+  categories: Category[];
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   @IsOptional()
@@ -54,11 +59,11 @@ export default class Transaction extends ValidableEntity {
   @Column({ type: 'varchar', length: 3 })
   @IsString()
   @IsIn(ISO_4217_CURRENCY_CODES)
-  currency?: string;
+  currency: string;
 
   @Column({ type: 'float' })
   @IsNumber({ allowNaN: false, allowInfinity: false })
-  balance?: number;
+  balance: number;
 
   @Column({ type: 'varchar', length: 9, nullable: true })
   @IsOptional()

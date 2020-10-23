@@ -50,7 +50,7 @@ describe('Keywords Controller', () => {
     const newCategory = new Category();
     newCategory.matchAll = true;
     newCategory.name = 'TEST CATEGORY';
-    newCategory.user = { id: user1.id };
+    newCategory.userId = user1.id;
       
     const entityManager = getManager();
     const category = await entityManager.save(newCategory);
@@ -59,7 +59,7 @@ describe('Keywords Controller', () => {
     const promises: Promise<Keyword>[] = [];
     for (let i = 0; i < 5; i++) {
       keywords.push(new Keyword());
-      keywords[i].category = { id: category.id };
+      keywords[i].categoryId = category.id;
       keywords[i].value = `Keyword #${i}`;
       promises.push(entityManager.save(keywords[i]));
     }
@@ -77,6 +77,170 @@ describe('Keywords Controller', () => {
         }),
       ).toBeGreaterThanOrEqual(0);
     }
+    done();
+  });
+
+  it('GET /keywords should only return the keywords of the given category', async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user1.id;
+
+    const newCategory2 = new Category();
+    newCategory2.matchAll = true;
+    newCategory2.name = 'TEST CATEGORY 2';
+    newCategory2.userId = user1.id;
+      
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+    const category2 = await entityManager.save(newCategory2);
+
+    const keywords: Keyword[] = [];
+    const promises: Promise<Keyword>[] = [];
+    for (let i = 0; i < 5; i++) {
+      keywords.push(new Keyword());
+      keywords[i].categoryId = category.id;
+      keywords[i].value = `Keyword #${i}`;
+      promises.push(entityManager.save(keywords[i]));
+
+      const wrongKeyword = new Keyword();
+      wrongKeyword.categoryId = category2.id;
+      wrongKeyword.value = `Wrong Keyword #${i}`;
+      promises.push(entityManager.save(wrongKeyword));
+    }
+    await Promise.all(promises);
+    const res = await request(app)
+      .get(`/keywords?category=${category.id}`)
+      .set({ authorization: `Bearer ${user1Token}` });
+
+    expect(res.status).toEqual(200);
+    const values = res.body.values as Keyword[];
+    for (let i = 0; i < keywords.length; i++) {
+      expect(
+        values.findIndex((value: Keyword) => {
+          return value.id === keywords[i].id;
+        }),
+      ).toBeGreaterThanOrEqual(0);
+    }
+    done();
+  });
+
+  it('GET /keywords with range, order and search parameters should filter, order and select a range of keywords', async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user1.id;
+      
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const keywords: Keyword[] = [];
+    const keywordNb = 7;
+    const promises: Promise<Keyword>[] = [];
+    for (let i = 0; i < keywordNb; i++) {
+      keywords.push(new Keyword());
+      keywords[i].categoryId = category.id;
+      if (i > 5) {
+        keywords[i].value = `test #${i}`;
+      } else {
+        keywords[i].value = `searched #${i}`;
+      }
+      promises.push(entityManager.save(keywords[i]));
+    }
+    await Promise.all(promises);
+
+    const res = await request(app)
+      .get(`/keywords?category=${category.id}&range=[0,4]&sort=["value","ASC"]&search=["value","searched"]`)
+      .set({ authorization: `Bearer ${user1Token}` });
+
+    expect(res.status).toEqual(200);
+    const values = res.body.values as Keyword[];
+    expect(values.length).toEqual(5);
+    for (let i = 0; i < 5; i++) {
+      expect(values[i].value).toEqual(`searched #${i}`);
+    }
+    done();
+  });
+
+  it('GET /keywords should 404 Not Found when given an unknown category id parameter', async (done) => {
+    const res = await request(app)
+      .get('/keywords?category=123456789')
+      .set({ authorization: `Bearer ${user1Token}` });
+
+    expect(res.status).toEqual(404);
+    done();
+  });
+
+  it('GET /keywords should return 403 Forbidden when the keyword\'s category is not owned by the user', async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user2.id;
+      
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const res = await request(app)
+      .get(`/keywords?category=${category.id}`)
+      .set({ authorization: `Bearer ${user1Token}` });
+
+    expect(res.status).toEqual(403);
+    done();
+  });
+
+  it('GET /keywords/:keywordId should return the keyword\'s information', async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user1.id;
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = category.id;
+    newKeyword.value = 'My Keyword';
+    const keyword = await entityManager.save(newKeyword);
+
+    const res = await request(app)
+      .get(`/keywords/${keyword.id}`)
+      .set({ authorization: `Bearer ${user1Token}` });
+
+    expect(res.status).toEqual(200);
+    expect(res.body.id).toEqual(keyword.id);
+    expect(res.body.value).toEqual(keyword.value);
+    expect(res.body.categoryId).toEqual(category.id);
+    done();
+  });
+
+  it('GET /keywords/:keywordId should 404 Not Found when given an unknown id parameter', async (done) => {
+    const res = await request(app)
+      .get('/keywords/123456789')
+      .set({ authorization: `Bearer ${user1Token}` });
+
+    expect(res.status).toEqual(404);
+    done();
+  });
+
+  it('GET /keywords/:keywordId should 403 Forbidden when trying to access another user\'s keyword', async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user2.id;
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = category.id;
+    newKeyword.value = 'My Keyword';
+    const keyword = await entityManager.save(newKeyword);
+
+    const res = await request(app)
+      .get(`/keywords/${keyword.id}`)
+      .set({ authorization: `Bearer ${user1Token}` });
+
+    expect(res.status).toEqual(403);
     done();
   });
 });

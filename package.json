@@ -21,7 +21,7 @@
     "pretest": "npm run build",
     "test": "jest --runInBand",
     "pretest:coverage": "npm run build",
-    "test:coverage": "jest --coverage --runInBand",
+    "test:coverage": "jest --coverage --runInBand -t \"Keywords Controller\"",
     "clean": "rimraf dist && mkdirp dist",
     "lint": "npm run eslint && npm run prettier",
     "lint:fix": "npm run eslint:fix && npm run prettier:fix",

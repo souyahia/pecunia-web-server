@@ -47,7 +47,7 @@ export async function getKeyword(req: AuthRequest, res: Response): Promise<void>
   } else {
     res.status(200).json({
       id: keyword.id,
-      category: keyword.category.id,
+      categoryId: keyword.category.id,
       value: keyword.value,
     });
   }
@@ -55,7 +55,7 @@ export async function getKeyword(req: AuthRequest, res: Response): Promise<void>
 
 export async function createKeyword(req: AuthRequest, res: Response): Promise<void> {
   const newKeyword = new Keyword();
-  newKeyword.category = { id: req.body.categoryId };
+  newKeyword.categoryId = req.body.categoryId;
   newKeyword.value = req.body.value;
   
   const entityManager = getManager();
@@ -100,7 +100,7 @@ export async function updateKeyword(req: AuthRequest, res: Response): Promise<vo
     const updatedKeyword = new Keyword();
     updatedKeyword.id = lookupKeyword.id;
     updatedKeyword.value = req.body.value;
-    updatedKeyword.category = { id: lookupKeyword.category.id };
+    updatedKeyword.categoryId = lookupKeyword.category.id;
     await updatedKeyword.validate();
     await entityManager.update(Keyword, { id: keywordId }, updatedKeyword);
     const result = await entityManager.findOne(Keyword, {

@@ -15,6 +15,7 @@ export async function connectDB(): Promise<Connection> {
     database: config.get('Database:Database') as string,
     entities: [Category, Keyword, Transaction, User],
     logging: false,
+    // logging: ["query", "error"],
   };
   logger.debug('Initating connection to database with the following configuration :');
   logger.debug(`- TYPE     : ${connectOptions.type}`);
