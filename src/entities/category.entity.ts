@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, ManyToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+  ManyToMany,
+  JoinColumn,
+} from 'typeorm';
 import { Length, IsString, IsDefined, IsBoolean } from 'class-validator';
 import ValidableEntity from './validableEntity';
 import Keyword from './keyword.entity';

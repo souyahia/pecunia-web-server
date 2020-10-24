@@ -51,7 +51,7 @@ describe('Keywords Controller', () => {
     newCategory.matchAll = true;
     newCategory.name = 'TEST CATEGORY';
     newCategory.userId = user1.id;
-      
+
     const entityManager = getManager();
     const category = await entityManager.save(newCategory);
 
@@ -90,7 +90,7 @@ describe('Keywords Controller', () => {
     newCategory2.matchAll = true;
     newCategory2.name = 'TEST CATEGORY 2';
     newCategory2.userId = user1.id;
-      
+
     const entityManager = getManager();
     const category = await entityManager.save(newCategory);
     const category2 = await entityManager.save(newCategory2);
@@ -130,7 +130,7 @@ describe('Keywords Controller', () => {
     newCategory.matchAll = true;
     newCategory.name = 'TEST CATEGORY';
     newCategory.userId = user1.id;
-      
+
     const entityManager = getManager();
     const category = await entityManager.save(newCategory);
 
@@ -150,7 +150,9 @@ describe('Keywords Controller', () => {
     await Promise.all(promises);
 
     const res = await request(app)
-      .get(`/keywords?category=${category.id}&range=[0,4]&sort=["value","ASC"]&search=["value","searched"]`)
+      .get(
+        `/keywords?category=${category.id}&range=[0,4]&sort=["value","ASC"]&search=["value","searched"]`,
+      )
       .set({ authorization: `Bearer ${user1Token}` });
 
     expect(res.status).toEqual(200);
@@ -171,12 +173,12 @@ describe('Keywords Controller', () => {
     done();
   });
 
-  it('GET /keywords should return 403 Forbidden when the keyword\'s category is not owned by the user', async (done) => {
+  it("GET /keywords should return 403 Forbidden when the keyword's category is not owned by the user", async (done) => {
     const newCategory = new Category();
     newCategory.matchAll = true;
     newCategory.name = 'TEST CATEGORY';
     newCategory.userId = user2.id;
-      
+
     const entityManager = getManager();
     const category = await entityManager.save(newCategory);
 
@@ -188,7 +190,7 @@ describe('Keywords Controller', () => {
     done();
   });
 
-  it('GET /keywords/:keywordId should return the keyword\'s information', async (done) => {
+  it("GET /keywords/:keywordId should return the keyword's information", async (done) => {
     const newCategory = new Category();
     newCategory.matchAll = true;
     newCategory.name = 'TEST CATEGORY';
@@ -222,7 +224,7 @@ describe('Keywords Controller', () => {
     done();
   });
 
-  it('GET /keywords/:keywordId should 403 Forbidden when trying to access another user\'s keyword', async (done) => {
+  it("GET /keywords/:keywordId should 403 Forbidden when trying to access another user's keyword", async (done) => {
     const newCategory = new Category();
     newCategory.matchAll = true;
     newCategory.name = 'TEST CATEGORY';
@@ -238,6 +240,259 @@ describe('Keywords Controller', () => {
 
     const res = await request(app)
       .get(`/keywords/${keyword.id}`)
+      .set({ authorization: `Bearer ${user1Token}` });
+
+    expect(res.status).toEqual(403);
+    done();
+  });
+
+  it('POST /keywords should add the new keyword into the database', async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user1.id;
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = category.id;
+    newKeyword.value = 'KEYWORD TEST';
+
+    await request(app)
+      .post('/keywords')
+      .set({ authorization: `Bearer ${user1Token}` })
+      .send({
+        categoryId: newKeyword.categoryId,
+        value: newKeyword.value,
+      });
+
+    const lookupKeyword = await entityManager.findOne(Keyword, {
+      where: {
+        categoryId: category.id,
+        value: newKeyword.value,
+      },
+    });
+
+    expect(lookupKeyword).toBeDefined();
+    done();
+  });
+
+  it('POST /keywords should return 201 Created with the inserted data', async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user1.id;
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = category.id;
+    newKeyword.value = 'KEYWORD TEST';
+
+    const res = await request(app)
+      .post('/keywords')
+      .set({ authorization: `Bearer ${user1Token}` })
+      .send({
+        categoryId: newKeyword.categoryId,
+        value: newKeyword.value,
+      });
+
+    expect(res.status).toEqual(201);
+    expect(res.body.categoryId).toEqual(category.id);
+    expect(res.body.value).toEqual(newKeyword.value);
+    expect(typeof res.body.id).toBe('number');
+    done();
+  });
+
+  it('POST /keywords should return 404 Not Found when given an invalid category ID', async (done) => {
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = 132456789;
+    newKeyword.value = 'KEYWORD TEST';
+
+    const res = await request(app)
+      .post('/keywords')
+      .set({ authorization: `Bearer ${user1Token}` })
+      .send({
+        categoryId: newKeyword.categoryId,
+        value: newKeyword.value,
+      });
+
+    expect(res.status).toEqual(404);
+    done();
+  });
+
+  it("POST /keywords should return 404 Not Found when given the ID of another user's category", async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user2.id;
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = category.id;
+    newKeyword.value = 'KEYWORD TEST';
+
+    const res = await request(app)
+      .post('/keywords')
+      .set({ authorization: `Bearer ${user1Token}` })
+      .send({
+        categoryId: newKeyword.categoryId,
+        value: newKeyword.value,
+      });
+
+    expect(res.status).toEqual(403);
+    done();
+  });
+
+  it('PATCH /keywords/:keywordId should update the value of a keyword', async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user1.id;
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = category.id;
+    newKeyword.value = 'KEYWORD TEST';
+    const keyword = await entityManager.save(newKeyword);
+
+    const value = 'NEW VALUE';
+
+    await request(app)
+      .patch(`/keywords/${keyword.id}`)
+      .set({ authorization: `Bearer ${user1Token}` })
+      .send({ value });
+
+    const lookupKeyword = await entityManager.findOne(Keyword, {
+      where: {
+        id: keyword.id,
+      },
+    });
+
+    expect(lookupKeyword.value).toEqual(value);
+    done();
+  });
+
+  it('PATCH /keywords/:keywordId should return 200 Ok with the new data', async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user1.id;
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = category.id;
+    newKeyword.value = 'KEYWORD TEST';
+    const keyword = await entityManager.save(newKeyword);
+
+    const value = 'NEW VALUE';
+
+    const res = await request(app)
+      .patch(`/keywords/${keyword.id}`)
+      .set({ authorization: `Bearer ${user1Token}` })
+      .send({ value });
+
+    expect(res.status).toEqual(200);
+    expect(res.body.id).toEqual(keyword.id);
+    expect(res.body.categoryId).toEqual(keyword.categoryId);
+    expect(res.body.value).toEqual(value);
+    done();
+  });
+
+  it('PATCH /keywords/:keywordId should return 404 Not Found when given an unknown id parameter', async (done) => {
+    const res = await request(app)
+      .patch('/keywords/123456789')
+      .set({ authorization: `Bearer ${user1Token}` })
+      .send({ value: 'NEW VALUE' });
+
+    expect(res.status).toEqual(404);
+    done();
+  });
+
+  it("PATCH /keywords/:keywordId should return 403 Forbidden when given the ID of another user's keyword", async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user2.id;
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = category.id;
+    newKeyword.value = 'KEYWORD TEST';
+    const keyword = await entityManager.save(newKeyword);
+
+    const res = await request(app)
+      .patch(`/keywords/${keyword.id}`)
+      .set({ authorization: `Bearer ${user1Token}` })
+      .send({ value: 'NEW VALUE' });
+
+    expect(res.status).toEqual(403);
+    done();
+  });
+
+  it('DELETE /keywords/:keywordId should delete the keyword', async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user1.id;
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = category.id;
+    newKeyword.value = 'KEYWORD TEST';
+    const keyword = await entityManager.save(newKeyword);
+
+    await request(app)
+      .delete(`/keywords/${keyword.id}`)
+      .set({ authorization: `Bearer ${user1Token}` });
+
+    const lookupKeyword = await entityManager.findOne(Keyword, {
+      where: {
+        id: keyword.id,
+      },
+    });
+
+    expect(lookupKeyword).toBeUndefined();
+    done();
+  });
+
+  it('DELETE /keywords/:keywordId should return 404 Not Found when given an unknown id', async (done) => {
+    const res = await request(app)
+      .delete('/keywords/132456789')
+      .set({ authorization: `Bearer ${user1Token}` });
+
+    expect(res.status).toEqual(404);
+    done();
+  });
+
+  it("DELETE /keywords/:keywordId should return 403 Forbidden when given the ID of another user's keyword", async (done) => {
+    const newCategory = new Category();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user2.id;
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    const newKeyword = new Keyword();
+    newKeyword.categoryId = category.id;
+    newKeyword.value = 'KEYWORD TEST';
+    const keyword = await entityManager.save(newKeyword);
+
+    const res = await request(app)
+      .delete(`/keywords/${keyword.id}`)
       .set({ authorization: `Bearer ${user1Token}` });
 
     expect(res.status).toEqual(403);

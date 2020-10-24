@@ -4,4 +4,10 @@ import * as usersController from './users.controller';
 import * as keywordsController from './keywords.controller';
 import * as endpointErrorController from './endpointError.controller';
 
-export { pingController, authController, usersController, keywordsController, endpointErrorController };
+export {
+  pingController,
+  authController,
+  usersController,
+  keywordsController,
+  endpointErrorController,
+};

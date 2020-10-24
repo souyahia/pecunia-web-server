@@ -1,12 +1,7 @@
 import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 import { keywordsController } from '../controllers';
-import {
-  paramsValidatorMiddleware,
-  authMiddleware,
-  Validators,
-  asyncWraper,
-} from '../middleware';
+import { paramsValidatorMiddleware, authMiddleware, Validators, asyncWraper } from '../middleware';
 
 const keywordsRouter = Router();
 
@@ -14,7 +9,7 @@ const keywordsRouter = Router();
  * @api { get } /keywords Get all Keywords of a given category.
  * @apiName GetKeywords
  * @apiGroup Keywords
- * 
+ *
  * @apiParam (Query Parameters) { int[] }    category  The ID of the category.
  * @apiParam (Query Parameters) { int[] }    [range]   Range for pagination. Ex : [3, 15] to get values from index 3 to 15.
  * @apiParam (Query Parameters) { String[] } [sort]    Sort for the results in the format : [field, order]. Order are either "ASC" or "DESC". Fields can be the following : "value" or "id".
@@ -38,7 +33,7 @@ const keywordsRouter = Router();
  *          ...
  *        ]
  *    ]
- * 
+ *
  * @apiError (404 Not Found) { String } message The error message.
  *
  * @apiErrorExample Category ID not found.
@@ -202,9 +197,9 @@ keywordsRouter.post(
  *    {
  *      "message": "Keyword ID not found."
  *    }
- * 
+ *
  * @apiError (403 Forbidden) { String } message The error message.
- * 
+ *
  * @apiErrorExample Invalid ownership for this Keyword.
  *    HTTP/1.1 403 Forbidden
  *    {
@@ -279,7 +274,7 @@ keywordsRouter.get(
  *    }
  *
  * @apiError (403 Forbidden) { String } message The error message.
- * 
+ *
  * @apiErrorExample Invalid ownership for this Keyword.
  *    HTTP/1.1 403 Forbidden
  *    {
@@ -354,7 +349,7 @@ keywordsRouter.patch(
  *    }
  *
  * @apiError (403 Forbidden) { String } message The error message.
- * 
+ *
  * @apiErrorExample Invalid ownership for this Keyword.
  *    HTTP/1.1 403 Forbidden
  *    {

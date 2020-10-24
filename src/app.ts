@@ -1,7 +1,13 @@
 import express from 'express';
 import { json, urlencoded } from 'body-parser';
 import logger from './logger';
-import { pingRouter, authRouter, usersRouter, keywordsRouter, endpointErrorRouter } from './routers';
+import {
+  pingRouter,
+  authRouter,
+  usersRouter,
+  keywordsRouter,
+  endpointErrorRouter,
+} from './routers';
 import { logMiddleware, errorHandlerMiddleware } from './middleware';
 
 logger.debug('Creating Express app...');

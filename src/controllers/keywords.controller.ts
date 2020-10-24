@@ -57,13 +57,13 @@ export async function createKeyword(req: AuthRequest, res: Response): Promise<vo
   const newKeyword = new Keyword();
   newKeyword.categoryId = req.body.categoryId;
   newKeyword.value = req.body.value;
-  
+
   const entityManager = getManager();
   const lookupCategory = await entityManager.findOne(Category, {
     where: {
-      id: newKeyword.category.id,
+      id: newKeyword.categoryId,
     },
-    relations: ['category', 'category.user'],
+    relations: ['user'],
   });
   if (!lookupCategory) {
     res.status(404).json({
@@ -85,8 +85,8 @@ export async function updateKeyword(req: AuthRequest, res: Response): Promise<vo
   const lookupKeyword = await entityManager.findOne(Keyword, {
     where: {
       id: keywordId,
-      relations: ['category', 'category.user'],
     },
+    relations: ['category', 'category.user'],
   });
   if (!lookupKeyword) {
     res.status(404).json({
@@ -118,8 +118,8 @@ export async function deleteKeyword(req: AuthRequest, res: Response): Promise<vo
   const lookupKeyword = await entityManager.findOne(Keyword, {
     where: {
       id: keywordId,
-      relations: ['category', 'category.user'],
     },
+    relations: ['category', 'category.user'],
   });
   if (!lookupKeyword) {
     res.status(404).json({
