@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 import { Length, IsString, IsEmail, IsUUID, IsIn } from 'class-validator';
 import ValidableEntity from './validableEntity';
 import Transaction from './transaction.entity';
-import Categories from './category.entity';
+import Category from './category.entity';
 import { USER_ROLES } from '../auth';
 
 @Entity({ name: 'Users' })
@@ -30,6 +30,6 @@ export default class User extends ValidableEntity {
   @OneToMany(() => Transaction, (transaction) => transaction.user)
   transactions: Transaction[];
 
-  @OneToMany(() => Categories, (category) => category.user)
-  categories: Categories[];
+  @OneToMany(() => Category, (category) => category.user)
+  categories: Category[];
 }

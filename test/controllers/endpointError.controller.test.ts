@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../../src/app';
 
-describe('Unknown endpoint controller', () => {
+describe('Unknown Endpoint Controller', () => {
   it('should return 400 Bad Request after GET bad endpoint with an error message', async (done) => {
     const res = await request(app).get('/test-bad-endpoint');
     expect(res.status).toEqual(400);

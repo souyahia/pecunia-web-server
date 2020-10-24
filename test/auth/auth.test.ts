@@ -9,7 +9,7 @@ import { clearDB } from '../testHelpers';
 const validEmail = 'test@mail.com';
 const validPassword = 'test-password';
 
-describe('Authentication module', () => {
+describe('Authentication Module', () => {
   beforeAll(async (done) => {
     const connection = await connectDB();
     await clearDB(connection);

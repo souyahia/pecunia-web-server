@@ -3,7 +3,6 @@ import { v4 } from 'uuid';
 import { getManager, Connection } from 'typeorm';
 import app from '../../src/app';
 import { User } from '../../src/entities';
-import { encryptPassword } from '../../src/auth/auth';
 import { connectDB, disconnectDB } from '../../src/database';
 import { UserRole, Auth } from '../../src/auth';
 import { clearDB } from '../testHelpers';
@@ -22,7 +21,7 @@ const userToken = Auth.signPayload({
 
 let connection: Connection = null;
 
-describe('Users controller', () => {
+describe('Users Controller', () => {
   beforeAll(async (done) => {
     connection = await connectDB();
     done();
@@ -46,7 +45,7 @@ describe('Users controller', () => {
       users.push(new User());
       users[i].id = v4();
       users[i].email = `user${i}.test@mail.com`;
-      passPromises.push(encryptPassword('test-password'));
+      passPromises.push(Auth.encryptPassword('test-password'));
       users[i].role = UserRole.User;
     }
     const passwords = await Promise.all(passPromises);
@@ -89,7 +88,7 @@ describe('Users controller', () => {
       } else {
         users[i].email = `user${i}.test@mail.com`;
       }
-      passPromises.push(encryptPassword('test-password'));
+      passPromises.push(Auth.encryptPassword('test-password'));
       users[i].role = UserRole.User;
     }
     const passwords = await Promise.all(passPromises);

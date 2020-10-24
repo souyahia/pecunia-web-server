@@ -31,7 +31,7 @@ export async function getUser(req: AuthRequest, res: Response): Promise<void> {
         message: 'User ID not found.',
       });
     } else {
-      res.status(200).send(user);
+      res.status(200).json(user);
     }
   }
 }

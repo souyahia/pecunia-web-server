@@ -1,55 +1,53 @@
 import { Router } from 'express';
-import { body, param } from 'express-validator';
-import { usersController } from '../controllers';
-import {
-  paramsValidatorMiddleware,
-  authMiddleware,
-  adminMiddleware,
-  Validators,
-  asyncWraper,
-} from '../middleware';
-import { USER_ROLES } from '../auth';
+import { body, param, query } from 'express-validator';
+import { keywordsController } from '../controllers';
+import { paramsValidatorMiddleware, authMiddleware, Validators, asyncWraper } from '../middleware';
 
-const usersRouter = Router();
+const keywordsRouter = Router();
 
 /**
- * @api { get } /users Get all Users.
- * @apiName GetUsers
- * @apiGroup Users
+ * @api { get } /keywords Get all Keywords of a given category.
+ * @apiName GetKeywords
+ * @apiGroup Keywords
  *
- * @apiParam (Query Parameters) { int[] }    [range]  Range for pagination. Ex : [3, 15] to get values from index 3 to 15.
- * @apiParam (Query Parameters) { String[] } [sort]   Sort for the results in the format : [field, order]. Order are either "ASC" or "DESC". Fields can be the following : "id", "email", "password" or "role".
- * @apiParam (Query Parameters) { String[] } [search] Filter results by searching keywords in fields with the format : [field, "keyword"]. Fields can be the following : "id", "email", "password" or "role".
+ * @apiParam (Query Parameters) { int[] }    category  The ID of the category.
+ * @apiParam (Query Parameters) { int[] }    [range]   Range for pagination. Ex : [3, 15] to get values from index 3 to 15.
+ * @apiParam (Query Parameters) { String[] } [sort]    Sort for the results in the format : [field, order]. Order are either "ASC" or "DESC". Fields can be the following : "value" or "id".
+ * @apiParam (Query Parameters) { String[] } [search]  Filter results by searching Keywords in fields with the format : [field, "Keyword"]. Fields can be the following : "value" or "id".
  *
- * @apiSuccess (200 OK) { int }    count           Total number of Users in the database;
- * @apiSuccess (200 OK) { User[] } values          Array of Users matching the query.
- * @apiSuccess (200 OK) { String } values.id       The id of the User (uuid v4).
- * @apiSuccess (200 OK) { String } values.email    The email of the User.
- * @apiSuccess (200 OK) { String } values.password The encrypted password of the User.
- * @apiSuccess (200 OK) { String } values.role     The role of the User, either "ADMIN" or "USER".
+ * @apiSuccess (200 OK) { Keyword[] } values            Array of Keywords matching the query.
+ * @apiSuccess (200 OK) { int }    values.id         The id of the Keyword.
+ * @apiSuccess (200 OK) { String } values.value      The value of the Keyword.
+ * @apiSuccess (200 OK) { int } values.categoryId    The ID of the Keyword's associated category.
  *
  * @apiSuccessExample Success Response:
  *    HTTP/1.1 200 OK
  *    [
  *      {
- *        "count": 10,
  *        "values" : [
  *          {
- *            "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
- *            "email": "john.doe@mail.com",
- *            "password": "$2b$10$rZIqIwmUmdOB12ECEinywu6UsH0HW06YwbeVX9T0yQBnHWWDKor6m",
- *            "role": "USER"
+ *            "id": "134",
+ *            "value": "Uber EATS",
+ *            "categoryId": "468"
  *          },
  *          ...
  *        ]
  *    ]
  *
+ * @apiError (404 Not Found) { String } message The error message.
+ *
+ * @apiErrorExample Category ID not found.
+ *    HTTP/1.1 404 Not Found
+ *    {
+ *      "message": "Unknown category ID."
+ *    }
+ *
  * @apiError (403 Forbidden) { String } message The error message.
  *
- * @apiErrorExample Insufficient authorization to access endpoint.
+ * @apiErrorExample Invalid ownership for this category.
  *    HTTP/1.1 403 Forbidden
  *    {
- *      "message": "You must be an administrator to use this endpoint."
+ *      "message": "You do not have the rights to access the keywords of this category."
  *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
@@ -73,65 +71,62 @@ const usersRouter = Router();
  *      "message": "Invalid request parameters.",
  *      "errors": [
  *        {
- *          "value": "1",
+ *          "value": "a",
  *          "msg": "Invalid value",
- *          "param": "range",
+ *          "param": "category",
  *          "location": "query"
  *        }
  *      ]
  *    }
  */
-usersRouter.get(
-  '/users',
+keywordsRouter.get(
+  '/keywords',
   [
     Validators.authToken,
     Validators.range,
-    Validators.getSort(['id', 'email', 'password', 'role']),
-    Validators.getSearch(['id', 'email', 'password', 'role']),
+    query('category').isInt({ min: 0 }),
+    Validators.getSort(['id', 'value']),
+    Validators.getSearch(['id', 'value']),
   ],
   paramsValidatorMiddleware,
   authMiddleware,
-  adminMiddleware,
-  asyncWraper(usersController.getUsers),
+  asyncWraper(keywordsController.getKeywords),
 );
 
 /**
- * @api { post } /users Create a new User.
- * @apiName CreateUser
- * @apiGroup Users
+ * @api { post } /keywords Create a new Keyword.
+ * @apiName CreateKeyword
+ * @apiGroup Keywords
  *
- * @apiParam (Body Parameters) { String } email    The email of the User.
- * @apiParam (Body Parameters) { String } password The password of the User.
- * @apiParam (Body Parameters) { String } role     The role of the User.
+ * @apiParam (Body Parameters) { int } categoryId The category associated with the Keyword.
+ * @apiParam (Body Parameters) { String } value   The value of the Keyword.
  *
- * @apiSuccess (201 Created) { String } id       The ID of the created User.
- * @apiSuccess (201 Created) { String } email    The email of the created User.
- * @apiSuccess (201 Created) { String } password The encrypted password of the created User.
- * @apiSuccess (201 Created) { String } role     The role of the created User, either "ADMIN" or "USER".
+ * @apiSuccess (201 Created) { int } id         The ID of the created keyword.
+ * @apiSuccess (201 Created) { String } value   The value of the created keyword.
+ * @apiSuccess (201 Created) { int } categoryId The ID of the keyword's category.
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 201 Created
  *    {
- *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
- *      "email": "john.doe@mail.com",
- *      "password": "$2b$10$rZIqIwmUmdOB12ECEinywu6UsH0HW06YwbeVX9T0yQBnHWWDKor6m",
- *      "role": "USER"
+ *      "id": "155",
+ *      "value": "Uber EATS",
+ *      "categoryId": "784"
  *    }
  *
- * @apiError (409 Conflict) { String } message The error message.
+ * @apiError (404 Not Found) { String } message The error message.
  *
- * @apiErrorExample Email already exists.
- *    HTTP/1.1 409 Conflict
+ * @apiErrorExample Category ID not found.
+ *    HTTP/1.1 404 Not Found
  *    {
- *      "message": "Email already exists."
+ *      "message": "Unknown category ID."
  *    }
  *
  * @apiError (403 Forbidden) { String } message The error message.
  *
- * @apiErrorExample Insufficient authorization to access endpoint.
+ * @apiErrorExample Invalid ownership for this category.
  *    HTTP/1.1 403 Forbidden
  *    {
- *      "message": "You must be an administrator to use this endpoint."
+ *      "message": "You do not have the rights to add a keyword to this category."
  *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
@@ -155,64 +150,60 @@ usersRouter.get(
  *      "message": "Invalid request parameters.",
  *      "errors": [
  *        {
- *          "value": "john.doeàmail.com",
+ *          "value": "a",
  *          "msg": "Invalid value",
- *          "param": "email",
+ *          "param": "categoryId",
  *          "location": "body"
  *        }
  *      ]
  *    }
  *
  */
-usersRouter.post(
-  '/users',
+keywordsRouter.post(
+  '/keywords',
   [
     Validators.authToken,
-    body('email').isEmail(),
-    body('password').isString().isLength({ min: 8, max: 30 }),
-    body('role').isString().isIn(USER_ROLES),
+    body('categoryId').isInt({ min: 0 }),
+    body('value').isString().isLength({ min: 1, max: 255 }),
   ],
   paramsValidatorMiddleware,
   authMiddleware,
-  adminMiddleware,
-  asyncWraper(usersController.createUser),
+  asyncWraper(keywordsController.createKeyword),
 );
 
 /**
- * @api { get } /users/:userId Get a User information.
- * @apiName GetUser
- * @apiGroup Users
+ * @api { get } /keywords/:keywordId Get a Keyword's information.
+ * @apiName GetKeyword
+ * @apiGroup Keywords
  *
- * @apiParam (URL Parameters) { String } userId The ID of the User.
+ * @apiParam (URL Parameters) { int } keywordId The ID of the Keyword.
  *
- * @apiSuccess (200 OK) { String } id       The ID of the User.
- * @apiSuccess (200 OK) { String } email    The email of the User.
- * @apiSuccess (200 OK) { String } password The encrypted password of the User.
- * @apiSuccess (200 OK) { String } role     The role of the User, either "ADMIN" or "USER".
+ * @apiSuccess (200 OK) { int } id         The ID of the Keyword.
+ * @apiSuccess (200 OK) { int } categoryId The ID of the Keyword's category.
+ * @apiSuccess (200 OK) { String } value   The value of the Keyword.
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 200 OK
  *    {
- *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
- *      "email": "john.doe@mail.com",
- *      "password": "$2b$10$rZIqIwmUmdOB12ECEinywu6UsH0HW06YwbeVX9T0yQBnHWWDKor6m",
- *      "role": "USER"
+ *      "id": "124",
+ *      "value": "Uber EATS",
+ *      "categoryId": "1548"
  *    }
  *
  * @apiError (404 Not Found) { String } message The error message.
  *
- * @apiErrorExample User ID not found.
+ * @apiErrorExample Keyword ID not found.
  *    HTTP/1.1 404 Not Found
  *    {
- *      "message": "User ID not found."
+ *      "message": "Keyword ID not found."
  *    }
  *
  * @apiError (403 Forbidden) { String } message The error message.
  *
- * @apiErrorExample Insufficient authorization to get User info.
+ * @apiErrorExample Invalid ownership for this Keyword.
  *    HTTP/1.1 403 Forbidden
  *    {
- *      "message": "Users without administrator rights can only get their own user info."
+ *      "message": "You do not have the rights to access this keyword."
  *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
@@ -236,68 +227,58 @@ usersRouter.post(
  *      "message": "Invalid request parameters.",
  *      "errors": [
  *        {
- *          "value": "aaa",
+ *          "value": "a",
  *          "msg": "Invalid value",
- *          "param": "userId",
+ *          "param": "keywordId",
  *          "location": "params"
  *        }
  *      ]
  *    }
  *
  */
-usersRouter.get(
-  '/users/:userId',
-  [Validators.authToken, param('userId').isUUID(4)],
+keywordsRouter.get(
+  '/keywords/:keywordId',
+  [Validators.authToken, param('keywordId').isInt({ min: 0 })],
   paramsValidatorMiddleware,
   authMiddleware,
-  asyncWraper(usersController.getUser),
+  asyncWraper(keywordsController.getKeyword),
 );
 
 /**
- * @api { patch } /users/:userId Update a User information.
- * @apiName UpdateUser
- * @apiGroup Users
+ * @api { patch } /keywords/:keywordId Update a Keyword's information.
+ * @apiName UpdateKeyword
+ * @apiGroup Keywords
  *
- * @apiParam (URL Parameters) { String } userId The ID of the User to update.
+ * @apiParam (URL Parameters) { int } keywordId The ID of the Keyword to update.
  *
- * @apiParam (Body Parameters) { String } [email]    The new email of the User.
- * @apiParam (Body Parameters) { String } [password] The new password of the User.
- * @apiParam (Body Parameters) { String } [role]     The new role of the User.
+ * @apiParam (Body Parameters) { String } value The new value of the Keyword.
  *
- * @apiSuccess (200 OK) { String } id       The ID of the updated User.
- * @apiSuccess (200 OK) { String } email    The email of the updated User.
- * @apiSuccess (200 OK) { String } password The encrypted password of the updated User.
- * @apiSuccess (200 OK) { String } role     The role of the updated User, either "ADMIN" or "USER".
+ * @apiSuccess (200 OK) { int } id       The ID of the updated Keyword.
+ * @apiSuccess (200 OK) { String } value The value of the updated Keyword.
+ * @apiSuccess (200 OK) { int } password The ID of the updated Keyword's category.
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 200 OK
  *    {
- *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
- *      "email": "john.doe@mail.com",
- *      "password": "$2b$10$rZIqIwmUmdOB12ECEinywu6UsH0HW06YwbeVX9T0yQBnHWWDKor6m",
- *      "role": "USER"
+ *      "id": "124",
+ *      "value": "Uber EATS",
+ *      "categoryId": "1548"
  *    }
  *
  * @apiError (404 Not Found) { String } message The error message.
  *
- * @apiErrorExample User ID not found.
+ * @apiErrorExample Keyword ID not found.
  *    HTTP/1.1 404 Not Found
  *    {
- *      "message": "User ID not found."
+ *      "message": "Keyword ID not found."
  *    }
  *
  * @apiError (403 Forbidden) { String } message The error message.
  *
- * @apiErrorExample Insufficient authorization to update role.
+ * @apiErrorExample Invalid ownership for this Keyword.
  *    HTTP/1.1 403 Forbidden
  *    {
- *      "message": "Users can not set themselves as administrator."
- *    }
- *
- * @apiErrorExample Insufficient authorization to update User.
- *    HTTP/1.1 403 Forbidden
- *    {
- *      "message": "Users without administrator rights can only update their own user info."
+ *      "message": "You do not have the rights to update this keyword."
  *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
@@ -321,60 +302,58 @@ usersRouter.get(
  *      "message": "Invalid request parameters.",
  *      "errors": [
  *        {
- *          "value": "john.doeàmail.com",
+ *          "value": "",
  *          "msg": "Invalid value",
- *          "param": "email",
+ *          "param": "value",
  *          "location": "body"
  *        }
  *      ]
  *    }
  *
  */
-usersRouter.patch(
-  '/users/:userId',
+keywordsRouter.patch(
+  '/keywords/:keywordId',
   [
     Validators.authToken,
-    param('userId').isUUID(4),
-    body('email').optional().isEmail(),
-    body('password').optional().isString().isLength({ min: 8, max: 30 }),
-    body('role').optional().isString().isIn(USER_ROLES),
+    param('keywordId').isInt({ min: 0 }),
+    body('value').isString().isLength({ min: 1, max: 255 }),
   ],
   paramsValidatorMiddleware,
   authMiddleware,
-  asyncWraper(usersController.updateUser),
+  asyncWraper(keywordsController.updateKeyword),
 );
 
 /**
- * @api { delete } /users/:userId Delete a User.
- * @apiName DeleteUser
- * @apiGroup Users
+ * @api { delete } /keywords/:keywordId Delete a Keyword.
+ * @apiName DeleteKeyword
+ * @apiGroup Keywords
  *
- * @apiParam (URL Parameters) { String } userId The ID of the User to delete.
+ * @apiParam (URL Parameters) { int } keywordId The ID of the Keyword to delete.
  *
  * @apiSuccess (200 OK) { String } message  The message response.
- * @apiSuccess (200 OK) { String } affected The number of deleted Users (should always be equal to 1).
+ * @apiSuccess (200 OK) { String } affected The number of deleted Keywords (should always be equal to 1).
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 200 OK
  *    {
- *      "message": "User successfully deleted."",
+ *      "message": "Keyword successfully deleted."",
  *      "affected": 1,
  *    }
  *
  * @apiError (404 Not Found) { String } message The error message.
  *
- * @apiErrorExample User ID not found.
+ * @apiErrorExample Keyword ID not found.
  *    HTTP/1.1 404 Not Found
  *    {
- *      "message": "User ID not found."
+ *      "message": "Keyword ID not found."
  *    }
  *
  * @apiError (403 Forbidden) { String } message The error message.
  *
- * @apiErrorExample Insufficient authorization to access endpoint.
+ * @apiErrorExample Invalid ownership for this Keyword.
  *    HTTP/1.1 403 Forbidden
  *    {
- *      "message": "You must be an administrator to use this endpoint."
+ *      "message": "You do not have the rights to delete this keyword."
  *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
@@ -398,22 +377,21 @@ usersRouter.patch(
  *      "message": "Invalid request parameters.",
  *      "errors": [
  *        {
- *          "value": "aaa",
+ *          "value": "a",
  *          "msg": "Invalid value",
- *          "param": "userId",
+ *          "param": "keywordId",
  *          "location": "params"
  *        }
  *      ]
  *    }
  *
  */
-usersRouter.delete(
-  '/users/:userId',
-  [Validators.authToken, param('userId').isUUID(4)],
+keywordsRouter.delete(
+  '/keywords/:keywordId',
+  [Validators.authToken, param('keywordId').isInt({ min: 0 })],
   paramsValidatorMiddleware,
   authMiddleware,
-  adminMiddleware,
-  asyncWraper(usersController.deleteUser),
+  asyncWraper(keywordsController.deleteKeyword),
 );
 
-export default usersRouter;
+export default keywordsRouter;

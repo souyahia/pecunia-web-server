@@ -25,11 +25,12 @@ const invalidFields = {
   accountId: 'this-string-is-more-than-22-characters',
 };
 
-describe('Transaction entity', () => {
-  it('shoud not throw when validating a valid entity', () => {
+describe('Transaction Entity', () => {
+  it('shoud not throw when validating a valid entity', async (done) => {
     const transaction = new Transaction();
     assignFields(transaction, validFields);
-    expect(async () => transaction.validate()).not.toThrow();
+    await expect(transaction.validate()).resolves.not.toThrow();
+    done();
   });
 
   it('should throw an EntityValidationError when validating a Transaction with bad date', async (done) => {

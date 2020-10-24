@@ -6,6 +6,7 @@ import {
   ManyToMany,
   JoinTable,
   Index,
+  JoinColumn,
 } from 'typeorm';
 import { Length, IsDate, IsNumber, IsString, IsOptional, IsIn } from 'class-validator';
 import ValidableEntity from './validableEntity';
@@ -18,7 +19,11 @@ export default class Transaction extends ValidableEntity {
   @PrimaryGeneratedColumn({ type: 'integer' })
   id: number;
 
+  @Column({ type: 'nvarchar', nullable: true })
+  userId?: string;
+
   @ManyToOne(() => User, (user) => user.transactions)
+  @JoinColumn({ name: 'userId' })
   @Index()
   user: User;
 
@@ -34,7 +39,7 @@ export default class Transaction extends ValidableEntity {
   @IsOptional()
   @IsString()
   @Length(0, 255)
-  name: string;
+  name?: string;
 
   @Column({ type: 'varchar', length: 11 })
   @IsString()
@@ -49,7 +54,7 @@ export default class Transaction extends ValidableEntity {
   @IsOptional()
   @IsString()
   @Length(0, 255)
-  publicId: string;
+  publicId?: string;
 
   @Column({ type: 'varchar', length: 3 })
   @IsString()
@@ -64,11 +69,11 @@ export default class Transaction extends ValidableEntity {
   @IsOptional()
   @IsString()
   @Length(0, 9)
-  bankId: string;
+  bankId?: string;
 
   @Column({ type: 'varchar', length: 22, nullable: true })
   @IsOptional()
   @IsString()
   @Length(0, 22)
-  accountId: string;
+  accountId?: string;
 }

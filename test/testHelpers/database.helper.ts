@@ -1,21 +1,18 @@
 import { Connection } from 'typeorm';
-import { ValidableEntity } from '../../src/entities';
 
 export async function clearDB(connection: Connection): Promise<void> {
-  const entities = connection.entityMetadatas;
-  const promises: Promise<unknown>[] = [];
-  for (let i = 0; i < entities.length; i++) {
-    const repository = connection.getRepository(entities[i].name);
-    promises.push(repository.query(`DELETE FROM ${entities[i].tableName};`));
-  }
-  await Promise.all(promises);
-}
+  let repo = connection.getRepository('Keywords');
+  await repo.query('DELETE FROM Keywords;');
 
-export async function clearRepository(
-  connection: Connection,
-  entity: typeof ValidableEntity,
-): Promise<void> {
-  const metadata = connection.getMetadata(entity);
-  const repository = connection.getRepository(metadata.name);
-  await repository.query(`DELETE FROM ${metadata.tableName};`);
+  repo = connection.getRepository('TransactionCategories');
+  await repo.query('DELETE FROM TransactionCategories;');
+
+  repo = connection.getRepository('Categories');
+  await repo.query('DELETE FROM Categories;');
+
+  repo = connection.getRepository('Transactions');
+  await repo.query('DELETE FROM Transactions;');
+
+  repo = connection.getRepository('Users');
+  await repo.query('DELETE FROM Users;');
 }
