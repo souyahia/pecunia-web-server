@@ -5,6 +5,7 @@ import {
   pingRouter,
   authRouter,
   usersRouter,
+  categoriesRouter,
   keywordsRouter,
   endpointErrorRouter,
 } from './routers';
@@ -20,6 +21,7 @@ app.use(urlencoded({ extended: true }));
 app.use(pingRouter);
 app.use(authRouter);
 app.use(usersRouter);
+app.use(categoriesRouter);
 app.use(keywordsRouter);
 app.use(endpointErrorRouter);
 

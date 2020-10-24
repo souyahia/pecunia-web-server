@@ -1,24 +1,27 @@
 import { Router } from 'express';
 import { body, param, query } from 'express-validator';
-import { keywordsController } from '../controllers';
+import { categoriesController } from '../controllers';
 import { paramsValidatorMiddleware, authMiddleware, Validators, asyncWraper } from '../middleware';
 
-const keywordsRouter = Router();
+const categoriesRouter = Router();
 
 /**
- * @api { get } /keywords Get all Keywords of a given category.
- * @apiName GetKeywords
- * @apiGroup Keywords
+ * @api { get } /categories Get all Categories of a given user.
+ * @apiName GetCategories
+ * @apiGroup Categories
  *
- * @apiParam (Query Parameters) { String }   categoryId The ID of the category (uuid v4).
- * @apiParam (Query Parameters) { int[] }    [range]    Range for pagination. Ex : [3, 15] to get values from index 3 to 15.
- * @apiParam (Query Parameters) { String[] } [sort]     Sort for the results in the format : [field, order]. Order are either "ASC" or "DESC". Fields can be the following : "value" or "id".
- * @apiParam (Query Parameters) { String[] } [search]   Filter results by searching keywords in fields with the format : [field, "keyword"]. Fields can be the following : "value" or "id".
+ * @apiParam (Query Parameters) { String }   userId   The ID of the user (uuid v4).
+ * @apiParam (Query Parameters) { int[] }    [range]  Range for pagination. Ex : [3, 15] to get values from index 3 to 15.
+ * @apiParam (Query Parameters) { String[] } [sort]   Sort for the results in the format : [field, order]. Order are either "ASC" or "DESC". Fields can be the following : "id", "name" or "matchAll".
+ * @apiParam (Query Parameters) { String[] } [search] Filter results by searching keywords in fields with the format : [field, "keyword"]. Fields can be the following : "id", "name" or "matchAll".
  *
- * @apiSuccess (200 OK) { Keyword[] } values            Array of Keywords matching the query.
- * @apiSuccess (200 OK) { String }    values.id         The id of the Keyword (uuid v4).
- * @apiSuccess (200 OK) { String }    values.value      The value of the Keyword.
- * @apiSuccess (200 OK) { int }       values.categoryId The ID of the Keyword's associated category.
+ * @apiSuccess (200 OK) { Category[] } values                Array of Categories matching the query.
+ * @apiSuccess (200 OK) { String }     values.id             The id of the Category (uuid v4).
+ * @apiSuccess (200 OK) { String }     values.name           The name of the Category.
+ * @apiSuccess (200 OK) { Boolean }    values.matchAll       The matchAll option of the Category.
+ * @apiSuccess (200 OK) { Keyword[] }  values.keywords       Array of Keywords of the Category.
+ * @apiSuccess (200 OK) { String }     values.keywords.id    The ID of the Keyword.
+ * @apiSuccess (200 OK) { String }     values.keywords.value The value of the Keyword.
  *
  * @apiSuccessExample Success Response:
  *    HTTP/1.1 200 OK
@@ -27,8 +30,15 @@ const keywordsRouter = Router();
  *        "values" : [
  *          {
  *            "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
- *            "value": "Uber EATS",
- *            "categoryId": "468"
+ *            "name": "Video Games",
+ *            "matchAll": false,
+ *            "keywords": [
+ *              {
+ *                "id": "df852dda-2924-47b1-ba1f-0704fa36db4a",
+ *                "value": "NINTENDO"
+ *              },
+ *              ...
+ *            ]
  *          },
  *          ...
  *        ]
@@ -36,18 +46,18 @@ const keywordsRouter = Router();
  *
  * @apiError (404 Not Found) { String } message The error message.
  *
- * @apiErrorExample Category ID not found.
+ * @apiErrorExample User ID not found.
  *    HTTP/1.1 404 Not Found
  *    {
- *      "message": "Unknown category ID."
+ *      "message": "Unknown user ID."
  *    }
  *
  * @apiError (403 Forbidden) { String } message The error message.
  *
- * @apiErrorExample Invalid ownership for this category.
+ * @apiErrorExample Invalid ownership.
  *    HTTP/1.1 403 Forbidden
  *    {
- *      "message": "You do not have the rights to access the keywords of this category."
+ *      "message": "You do not have the rights to access the categories of this user."
  *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
@@ -73,60 +83,44 @@ const keywordsRouter = Router();
  *        {
  *          "value": "a",
  *          "msg": "Invalid value",
- *          "param": "categoryId",
+ *          "param": "userId",
  *          "location": "query"
  *        }
  *      ]
  *    }
  */
-keywordsRouter.get(
-  '/keywords',
+categoriesRouter.get(
+  '/categories',
   [
     Validators.authToken,
     Validators.range,
-    query('categoryId').isUUID(4),
-    Validators.getSort(['id', 'value']),
-    Validators.getSearch(['id', 'value']),
+    query('userId').isUUID(4),
+    Validators.getSort(['id', 'name', 'matchAll']),
+    Validators.getSearch(['id', 'name', 'matchAll']),
   ],
   paramsValidatorMiddleware,
   authMiddleware,
-  asyncWraper(keywordsController.getKeywords),
+  asyncWraper(categoriesController.getCategories),
 );
 
 /**
- * @api { post } /keywords Create a new Keyword.
- * @apiName CreateKeyword
- * @apiGroup Keywords
+ * @api { post } /categories Create a new Category.
+ * @apiName CreateCategory
+ * @apiGroup Categories
  *
- * @apiParam (Body Parameters) { String } categoryId The category associated with the Keyword (uuid v4).
- * @apiParam (Body Parameters) { String } value      The value of the Keyword.
+ * @apiParam (Body Parameters) { Boolean } matchAll The matchAll option of the Category.
+ * @apiParam (Body Parameters) { String }  name     The name of the Category.
  *
- * @apiSuccess (201 Created) { String } id      The ID of the created Keyword (uuid v4).
- * @apiSuccess (201 Created) { String } value   The value of the created Keyword.
- * @apiSuccess (201 Created) { int } categoryId The ID of the Keyword's Category.
+ * @apiSuccess (201 Created) { String }  id       The ID of the created Category (uuid v4).
+ * @apiSuccess (201 Created) { String }  name     The name of the created Category.
+ * @apiSuccess (201 Created) { Boolean } matchAll The matchAll option of the created Category.
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 201 Created
  *    {
  *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
- *      "value": "Uber EATS",
- *      "categoryId": "6f88c6f0-98f8-4600-b3c4-c7aeb630148f"
- *    }
- *
- * @apiError (404 Not Found) { String } message The error message.
- *
- * @apiErrorExample Category ID not found.
- *    HTTP/1.1 404 Not Found
- *    {
- *      "message": "Unknown category ID."
- *    }
- *
- * @apiError (403 Forbidden) { String } message The error message.
- *
- * @apiErrorExample Invalid ownership for this category.
- *    HTTP/1.1 403 Forbidden
- *    {
- *      "message": "You do not have the rights to add a keyword to this category."
+ *      "name": "Video Games",
+ *      "matchAll": false
  *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
@@ -152,58 +146,68 @@ keywordsRouter.get(
  *        {
  *          "value": "a",
  *          "msg": "Invalid value",
- *          "param": "categoryId",
+ *          "param": "matchAll",
  *          "location": "body"
  *        }
  *      ]
  *    }
  *
  */
-keywordsRouter.post(
-  '/keywords',
+categoriesRouter.post(
+  '/categories',
   [
     Validators.authToken,
-    body('categoryId').isUUID(4),
-    body('value').isString().isLength({ min: 1, max: 255 }),
+    body('matchAll').isBoolean(),
+    body('name').isString().isLength({ min: 1, max: 255 }),
   ],
   paramsValidatorMiddleware,
   authMiddleware,
-  asyncWraper(keywordsController.createKeyword),
+  asyncWraper(categoriesController.createCategory),
 );
 
 /**
- * @api { get } /keywords/:keywordId Get a Keyword's information.
- * @apiName GetKeyword
- * @apiGroup Keywords
+ * @api { get } /categories/:categoryId Get a Category's information.
+ * @apiName GetCategory
+ * @apiGroup Categories
  *
- * @apiParam (URL Parameters) { String } keywordId The ID of the Keyword (uuid v4).
+ * @apiParam (URL Parameters) { String } categoryId The ID of the Category (uuid v4).
  *
- * @apiSuccess (200 OK) { String } id         The ID of the Keyword (uuid v4).
- * @apiSuccess (200 OK) { String } categoryId The ID of the Keyword's category (uuid v4).
- * @apiSuccess (200 OK) { String } value      The value of the Keyword.
+ * @apiSuccess (200 OK) { String }    id             The id of the Category (uuid v4).
+ * @apiSuccess (200 OK) { String }    name           The name of the Category.
+ * @apiSuccess (200 OK) { Boolean }   matchAll       The matchAll option of the Category.
+ * @apiSuccess (200 OK) { Keyword[] } keywords       Array of Keywords of the Category.
+ * @apiSuccess (200 OK) { String }    keywords.id    The ID of the Keyword.
+ * @apiSuccess (200 OK) { String }    keywords.value The value of the Keyword.
  *
- * @apiSuccessExample Success Response
+ * @apiSuccessExample Success Response:
  *    HTTP/1.1 200 OK
  *    {
  *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
- *      "value": "Uber EATS",
- *      "categoryId": "6f88c6f0-98f8-4600-b3c4-c7aeb630148f"
+ *      "name": "Video Games",
+ *      "matchAll": false,
+ *      "keywords": [
+ *        {
+ *          "id": "df852dda-2924-47b1-ba1f-0704fa36db4a",
+ *          "value": "NINTENDO"
+ *        },
+ *        ...
+ *      ]
  *    }
  *
  * @apiError (404 Not Found) { String } message The error message.
  *
- * @apiErrorExample Keyword ID not found.
+ * @apiErrorExample Category ID not found.
  *    HTTP/1.1 404 Not Found
  *    {
- *      "message": "Keyword ID not found."
+ *      "message": "Category ID not found."
  *    }
  *
  * @apiError (403 Forbidden) { String } message The error message.
  *
- * @apiErrorExample Invalid ownership for this Keyword.
+ * @apiErrorExample Invalid ownership for this Category.
  *    HTTP/1.1 403 Forbidden
  *    {
- *      "message": "You do not have the rights to access this keyword."
+ *      "message": "You do not have the rights to access this category."
  *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
@@ -229,40 +233,54 @@ keywordsRouter.post(
  *        {
  *          "value": "a",
  *          "msg": "Invalid value",
- *          "param": "keywordId",
+ *          "param": "categoryId",
  *          "location": "params"
  *        }
  *      ]
  *    }
  *
  */
-keywordsRouter.get(
-  '/keywords/:keywordId',
-  [Validators.authToken, param('keywordId').isUUID(4)],
+categoriesRouter.get(
+  '/categories/:categoryId',
+  [Validators.authToken, param('categoryId').isUUID(4)],
   paramsValidatorMiddleware,
   authMiddleware,
-  asyncWraper(keywordsController.getKeyword),
+  asyncWraper(categoriesController.getCategory),
 );
 
 /**
- * @api { patch } /keywords/:keywordId Update a Keyword's information.
- * @apiName UpdateKeyword
- * @apiGroup Keywords
+ * @api { patch } /categories/:categoryId Update a Category's information.
+ * @apiName UpdateCategory
+ * @apiGroup Categories
  *
- * @apiParam (URL Parameters) { String } keywordId The ID of the Keyword to update (uuid v4).
+ * @apiParam (URL Parameters) { String } categoryId The ID of the Category to update (uuid v4).
  *
- * @apiParam (Body Parameters) { String } value The new value of the Keyword.
+ * @apiParam (Body Parameters) { String }    [name]         The new name of the Category.
+ * @apiParam (Body Parameters) { Boolean }   [matchAll]     The new matchAll option of the Category.
+ * @apiParam (Body Parameters) { Keyword[] } [keywords]     New Keywords of the Category.
+ * @apiParam (Body Parameters) { String }    [keywords.id]  The ID of the Keyword. If you do not specify a Keyword ID, a new one will be created.
+ * @apiParam (Body Parameters) { String }    keywords.value The value of the Keyword.
  *
- * @apiSuccess (200 OK) { String } id         The ID of the updated Keyword (uuid v4).
- * @apiSuccess (200 OK) { String } value      The value of the updated Keyword.
- * @apiSuccess (200 OK) { String } categoryId The ID of the updated Keyword's category (uuid v4).
+ * @apiSuccess (200 OK) { String }    id             The id of the updated Category (uuid v4).
+ * @apiSuccess (200 OK) { String }    name           The name of the updated Category.
+ * @apiSuccess (200 OK) { Boolean }   matchAll       The matchAll option of the updated Category.
+ * @apiSuccess (200 OK) { Keyword[] } keywords       Array of Keywords of the updated Category.
+ * @apiSuccess (200 OK) { String }    keywords.id    The ID of the Keyword.
+ * @apiSuccess (200 OK) { String }    keywords.value The value of the Keyword.
  *
- * @apiSuccessExample Success Response
+ * @apiSuccessExample Success Response:
  *    HTTP/1.1 200 OK
  *    {
  *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
- *      "value": "Uber EATS",
- *      "categoryId": "6f88c6f0-98f8-4600-b3c4-c7aeb630148f"
+ *      "name": "Video Games",
+ *      "matchAll": false,
+ *      "keywords": [
+ *        {
+ *          "id": "df852dda-2924-47b1-ba1f-0704fa36db4a",
+ *          "value": "NINTENDO"
+ *        },
+ *        ...
+ *      ]
  *    }
  *
  * @apiError (404 Not Found) { String } message The error message.
@@ -270,15 +288,27 @@ keywordsRouter.get(
  * @apiErrorExample Keyword ID not found.
  *    HTTP/1.1 404 Not Found
  *    {
- *      "message": "Keyword ID not found."
+ *      "message": "Keyword ID not found. Do not specify the keyword ID if you want to create a new one."
+ *    }
+ *
+ * @apiErrorExample Category ID not found.
+ *    HTTP/1.1 404 Not Found
+ *    {
+ *      "message": "Category ID not found."
  *    }
  *
  * @apiError (403 Forbidden) { String } message The error message.
  *
- * @apiErrorExample Invalid ownership for this Keyword.
+ * @apiErrorExample Invalid ownership for this Category.
  *    HTTP/1.1 403 Forbidden
  *    {
- *      "message": "You do not have the rights to update this keyword."
+ *      "message": "You do not have the rights to update this category."
+ *    }
+ *
+ * @apiErrorExample Invalid ownership for a Keyword.
+ *    HTTP/1.1 403 Forbidden
+ *    {
+ *      "message": "You are not the owner of the keyword you are trying to add to the category."
  *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
@@ -304,56 +334,58 @@ keywordsRouter.get(
  *        {
  *          "value": "",
  *          "msg": "Invalid value",
- *          "param": "value",
+ *          "param": "name",
  *          "location": "body"
  *        }
  *      ]
  *    }
  *
  */
-keywordsRouter.patch(
-  '/keywords/:keywordId',
+categoriesRouter.patch(
+  '/categories/:categoryId',
   [
     Validators.authToken,
-    param('keywordId').isUUID(4),
-    body('value').isString().isLength({ min: 1, max: 255 }),
+    param('categoryId').isUUID(4),
+    body('name').optional().isString().isLength({ min: 1, max: 255 }),
+    body('matchAll').optional().isBoolean(),
+    Validators.keywordsValidator,
   ],
   paramsValidatorMiddleware,
   authMiddleware,
-  asyncWraper(keywordsController.updateKeyword),
+  asyncWraper(categoriesController.updateCategory),
 );
 
 /**
- * @api { delete } /keywords/:keywordId Delete a Keyword.
- * @apiName DeleteKeyword
- * @apiGroup Keywords
+ * @api { delete } /categories/:categoryId Delete a Category.
+ * @apiName DeleteCategory
+ * @apiGroup Categories
  *
- * @apiParam (URL Parameters) { String } keywordId The ID of the Keyword to delete (uuid v4).
+ * @apiParam (URL Parameters) { String } categoryId The ID of the Category to delete (uuid v4).
  *
  * @apiSuccess (200 OK) { String } message  The message response.
- * @apiSuccess (200 OK) { String } affected The number of deleted Keywords (should always be equal to 1).
+ * @apiSuccess (200 OK) { String } affected The number of deleted Categories (should always be equal to 1).
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 200 OK
  *    {
- *      "message": "Keyword successfully deleted.",
+ *      "message": "Category successfully deleted.",
  *      "affected": 1,
  *    }
  *
  * @apiError (404 Not Found) { String } message The error message.
  *
- * @apiErrorExample Keyword ID not found.
+ * @apiErrorExample Category ID not found.
  *    HTTP/1.1 404 Not Found
  *    {
- *      "message": "Keyword ID not found."
+ *      "message": "Category ID not found."
  *    }
  *
  * @apiError (403 Forbidden) { String } message The error message.
  *
- * @apiErrorExample Invalid ownership for this Keyword.
+ * @apiErrorExample Invalid ownership for this Category.
  *    HTTP/1.1 403 Forbidden
  *    {
- *      "message": "You do not have the rights to delete this keyword."
+ *      "message": "You do not have the rights to delete this category."
  *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
@@ -379,19 +411,19 @@ keywordsRouter.patch(
  *        {
  *          "value": "a",
  *          "msg": "Invalid value",
- *          "param": "keywordId",
+ *          "param": "categoryId",
  *          "location": "params"
  *        }
  *      ]
  *    }
  *
  */
-keywordsRouter.delete(
-  '/keywords/:keywordId',
-  [Validators.authToken, param('keywordId').isUUID(4)],
+categoriesRouter.delete(
+  '/categories/:categoryId',
+  [Validators.authToken, param('categoryId').isUUID(4)],
   paramsValidatorMiddleware,
   authMiddleware,
-  asyncWraper(keywordsController.deleteKeyword),
+  asyncWraper(categoriesController.deleteCategory),
 );
 
-export default keywordsRouter;
+export default categoriesRouter;

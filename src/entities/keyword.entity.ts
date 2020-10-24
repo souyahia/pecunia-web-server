@@ -19,6 +19,6 @@ export default class Keyword extends ValidableEntity {
 
   @Column({ type: 'nvarchar', length: 255 })
   @IsString()
-  @Length(0, 255)
+  @Length(1, 255)
   value: string;
 }

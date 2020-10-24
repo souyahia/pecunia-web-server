@@ -10,15 +10,25 @@
   "order": [
     "Ping",
     "GetPing",
+
     "Auth",
     "SignIn",
     "LogIn",
+
     "Users",
     "GetUsers",
     "GetUser",
     "CreateUser",
     "UpdateUser",
     "DeleteUser",
+
+    "Categories",
+    "GetCategories",
+    "GetCategory",
+    "CreateCategory",
+    "UpdateCategory",
+    "DeleteCategory",
+
     "Keywords",
     "GetKeywords",
     "GetKeyword",

@@ -357,7 +357,7 @@ usersRouter.patch(
  * @apiSuccessExample Success Response
  *    HTTP/1.1 200 OK
  *    {
- *      "message": "User successfully deleted."",
+ *      "message": "User successfully deleted.",
  *      "affected": 1,
  *    }
  *
