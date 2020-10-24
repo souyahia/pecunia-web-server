@@ -1,8 +1,10 @@
+import { v4 } from 'uuid';
 import { Transaction } from '../../src/entities';
 import { assignFields } from '../testHelpers';
 import { EntityValidationError } from '../../src/errors';
 
 const validFields = {
+  id: v4(),
   transaction: null,
   date: new Date(),
   amount: 50.64,
@@ -12,6 +14,7 @@ const validFields = {
 };
 
 const invalidFields = {
+  id: 'not-a-uuid',
   date: null,
   amount: NaN,
   name:
@@ -30,6 +33,13 @@ describe('Transaction Entity', () => {
     const transaction = new Transaction();
     assignFields(transaction, validFields);
     await expect(transaction.validate()).resolves.not.toThrow();
+    done();
+  });
+
+  it('should throw an EntityValidationError when validating a Transaction with bad id', async (done) => {
+    const transaction = new Transaction();
+    assignFields(transaction, validFields, { id: invalidFields.id });
+    await expect(transaction.validate()).rejects.toThrow(EntityValidationError);
     done();
   });
 

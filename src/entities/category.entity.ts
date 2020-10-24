@@ -1,13 +1,13 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
   ManyToMany,
   JoinColumn,
+  PrimaryColumn,
 } from 'typeorm';
-import { Length, IsString, IsDefined, IsBoolean } from 'class-validator';
+import { Length, IsString, IsDefined, IsBoolean, IsUUID } from 'class-validator';
 import ValidableEntity from './validableEntity';
 import Keyword from './keyword.entity';
 import User from './user.entity';
@@ -15,8 +15,10 @@ import Transaction from './transaction.entity';
 
 @Entity({ name: 'Categories' })
 export default class Category extends ValidableEntity {
-  @PrimaryGeneratedColumn({ type: 'integer' })
-  id: number;
+  @PrimaryColumn({ type: 'nvarchar', length: 255 })
+  @IsString()
+  @IsUUID('4')
+  id: string;
 
   @Column({ type: 'nvarchar', nullable: true })
   userId?: string;
@@ -35,7 +37,7 @@ export default class Category extends ValidableEntity {
   @IsBoolean()
   matchAll: boolean;
 
-  @OneToMany(() => Keyword, (keyword) => keyword.category)
+  @OneToMany(() => Keyword, (keyword) => keyword.category, { cascade: true })
   keywords: Keyword[];
 
   @ManyToMany(() => Transaction, (transaction) => transaction.categories)

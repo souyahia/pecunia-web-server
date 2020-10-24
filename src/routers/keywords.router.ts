@@ -10,15 +10,15 @@ const keywordsRouter = Router();
  * @apiName GetKeywords
  * @apiGroup Keywords
  *
- * @apiParam (Query Parameters) { int[] }    category  The ID of the category.
- * @apiParam (Query Parameters) { int[] }    [range]   Range for pagination. Ex : [3, 15] to get values from index 3 to 15.
- * @apiParam (Query Parameters) { String[] } [sort]    Sort for the results in the format : [field, order]. Order are either "ASC" or "DESC". Fields can be the following : "value" or "id".
- * @apiParam (Query Parameters) { String[] } [search]  Filter results by searching Keywords in fields with the format : [field, "Keyword"]. Fields can be the following : "value" or "id".
+ * @apiParam (Query Parameters) { String }   categoryId The ID of the category (uuid v4).
+ * @apiParam (Query Parameters) { int[] }    [range]    Range for pagination. Ex : [3, 15] to get values from index 3 to 15.
+ * @apiParam (Query Parameters) { String[] } [sort]     Sort for the results in the format : [field, order]. Order are either "ASC" or "DESC". Fields can be the following : "value" or "id".
+ * @apiParam (Query Parameters) { String[] } [search]   Filter results by searching keywords in fields with the format : [field, "keyword"]. Fields can be the following : "value" or "id".
  *
  * @apiSuccess (200 OK) { Keyword[] } values            Array of Keywords matching the query.
- * @apiSuccess (200 OK) { int }    values.id         The id of the Keyword.
- * @apiSuccess (200 OK) { String } values.value      The value of the Keyword.
- * @apiSuccess (200 OK) { int } values.categoryId    The ID of the Keyword's associated category.
+ * @apiSuccess (200 OK) { String }    values.id         The id of the Keyword (uuid v4).
+ * @apiSuccess (200 OK) { String }    values.value      The value of the Keyword.
+ * @apiSuccess (200 OK) { int }       values.categoryId The ID of the Keyword's associated category.
  *
  * @apiSuccessExample Success Response:
  *    HTTP/1.1 200 OK
@@ -26,7 +26,7 @@ const keywordsRouter = Router();
  *      {
  *        "values" : [
  *          {
- *            "id": "134",
+ *            "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
  *            "value": "Uber EATS",
  *            "categoryId": "468"
  *          },
@@ -84,7 +84,7 @@ keywordsRouter.get(
   [
     Validators.authToken,
     Validators.range,
-    query('category').isInt({ min: 0 }),
+    query('categoryId').isUUID(4),
     Validators.getSort(['id', 'value']),
     Validators.getSearch(['id', 'value']),
   ],
@@ -98,19 +98,19 @@ keywordsRouter.get(
  * @apiName CreateKeyword
  * @apiGroup Keywords
  *
- * @apiParam (Body Parameters) { int } categoryId The category associated with the Keyword.
- * @apiParam (Body Parameters) { String } value   The value of the Keyword.
+ * @apiParam (Body Parameters) { String } categoryId The category associated with the Keyword (uuid v4).
+ * @apiParam (Body Parameters) { String } value      The value of the Keyword.
  *
- * @apiSuccess (201 Created) { int } id         The ID of the created keyword.
- * @apiSuccess (201 Created) { String } value   The value of the created keyword.
- * @apiSuccess (201 Created) { int } categoryId The ID of the keyword's category.
+ * @apiSuccess (201 Created) { String } id      The ID of the created Keyword (uuid v4).
+ * @apiSuccess (201 Created) { String } value   The value of the created Keyword.
+ * @apiSuccess (201 Created) { int } categoryId The ID of the Keyword's Category.
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 201 Created
  *    {
- *      "id": "155",
+ *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
  *      "value": "Uber EATS",
- *      "categoryId": "784"
+ *      "categoryId": "6f88c6f0-98f8-4600-b3c4-c7aeb630148f"
  *    }
  *
  * @apiError (404 Not Found) { String } message The error message.
@@ -163,7 +163,7 @@ keywordsRouter.post(
   '/keywords',
   [
     Validators.authToken,
-    body('categoryId').isInt({ min: 0 }),
+    body('categoryId').isUUID(4),
     body('value').isString().isLength({ min: 1, max: 255 }),
   ],
   paramsValidatorMiddleware,
@@ -176,18 +176,18 @@ keywordsRouter.post(
  * @apiName GetKeyword
  * @apiGroup Keywords
  *
- * @apiParam (URL Parameters) { int } keywordId The ID of the Keyword.
+ * @apiParam (URL Parameters) { String } keywordId The ID of the Keyword (uuid v4).
  *
- * @apiSuccess (200 OK) { int } id         The ID of the Keyword.
- * @apiSuccess (200 OK) { int } categoryId The ID of the Keyword's category.
- * @apiSuccess (200 OK) { String } value   The value of the Keyword.
+ * @apiSuccess (200 OK) { String } id         The ID of the Keyword (uuid v4).
+ * @apiSuccess (200 OK) { String } categoryId The ID of the Keyword's category (uuid v4).
+ * @apiSuccess (200 OK) { String } value      The value of the Keyword.
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 200 OK
  *    {
- *      "id": "124",
+ *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
  *      "value": "Uber EATS",
- *      "categoryId": "1548"
+ *      "categoryId": "6f88c6f0-98f8-4600-b3c4-c7aeb630148f"
  *    }
  *
  * @apiError (404 Not Found) { String } message The error message.
@@ -238,7 +238,7 @@ keywordsRouter.post(
  */
 keywordsRouter.get(
   '/keywords/:keywordId',
-  [Validators.authToken, param('keywordId').isInt({ min: 0 })],
+  [Validators.authToken, param('keywordId').isUUID(4)],
   paramsValidatorMiddleware,
   authMiddleware,
   asyncWraper(keywordsController.getKeyword),
@@ -249,20 +249,20 @@ keywordsRouter.get(
  * @apiName UpdateKeyword
  * @apiGroup Keywords
  *
- * @apiParam (URL Parameters) { int } keywordId The ID of the Keyword to update.
+ * @apiParam (URL Parameters) { String } keywordId The ID of the Keyword to update (uuid v4).
  *
  * @apiParam (Body Parameters) { String } value The new value of the Keyword.
  *
- * @apiSuccess (200 OK) { int } id       The ID of the updated Keyword.
- * @apiSuccess (200 OK) { String } value The value of the updated Keyword.
- * @apiSuccess (200 OK) { int } password The ID of the updated Keyword's category.
+ * @apiSuccess (200 OK) { String } id         The ID of the updated Keyword (uuid v4).
+ * @apiSuccess (200 OK) { String } value      The value of the updated Keyword.
+ * @apiSuccess (200 OK) { String } categoryId The ID of the updated Keyword's category (uuid v4).
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 200 OK
  *    {
- *      "id": "124",
+ *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
  *      "value": "Uber EATS",
- *      "categoryId": "1548"
+ *      "categoryId": "6f88c6f0-98f8-4600-b3c4-c7aeb630148f"
  *    }
  *
  * @apiError (404 Not Found) { String } message The error message.
@@ -315,7 +315,7 @@ keywordsRouter.patch(
   '/keywords/:keywordId',
   [
     Validators.authToken,
-    param('keywordId').isInt({ min: 0 }),
+    param('keywordId').isUUID(4),
     body('value').isString().isLength({ min: 1, max: 255 }),
   ],
   paramsValidatorMiddleware,
@@ -328,7 +328,7 @@ keywordsRouter.patch(
  * @apiName DeleteKeyword
  * @apiGroup Keywords
  *
- * @apiParam (URL Parameters) { int } keywordId The ID of the Keyword to delete.
+ * @apiParam (URL Parameters) { String } keywordId The ID of the Keyword to delete (uuid v4).
  *
  * @apiSuccess (200 OK) { String } message  The message response.
  * @apiSuccess (200 OK) { String } affected The number of deleted Keywords (should always be equal to 1).
@@ -388,7 +388,7 @@ keywordsRouter.patch(
  */
 keywordsRouter.delete(
   '/keywords/:keywordId',
-  [Validators.authToken, param('keywordId').isInt({ min: 0 })],
+  [Validators.authToken, param('keywordId').isUUID(4)],
   paramsValidatorMiddleware,
   authMiddleware,
   asyncWraper(keywordsController.deleteKeyword),
