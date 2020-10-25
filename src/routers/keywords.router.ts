@@ -6,9 +6,11 @@ import { paramsValidatorMiddleware, authMiddleware, Validators, asyncWraper } fr
 const keywordsRouter = Router();
 
 /**
+ * @apiDeprecated The Keywords API should no longer be used. Use the Categories API instead.
  * @api { get } /keywords Get all Keywords of a given category.
  * @apiName GetKeywords
- * @apiGroup Keywords
+ * @apiGroup Keywords [DEPRECATED]
+ * @apiDescription **- The Keywords API should no longer be used. Use the Categories API instead. -**
  *
  * @apiParam (Query Parameters) { String }   categoryId The ID of the category (uuid v4).
  * @apiParam (Query Parameters) { int[] }    [range]    Range for pagination. Ex : [3, 15] to get values from index 3 to 15.
@@ -94,9 +96,11 @@ keywordsRouter.get(
 );
 
 /**
+ * @apiDeprecated The Keywords API should no longer be used. Use the Categories API instead.
  * @api { post } /keywords Create a new Keyword.
  * @apiName CreateKeyword
- * @apiGroup Keywords
+ * @apiGroup Keywords [DEPRECATED]
+ * @apiDescription **- The Keywords API should no longer be used. Use the Categories API instead. -**
  *
  * @apiParam (Body Parameters) { String } categoryId The category associated with the Keyword (uuid v4).
  * @apiParam (Body Parameters) { String } value      The value of the Keyword.
@@ -172,9 +176,11 @@ keywordsRouter.post(
 );
 
 /**
+ * @apiDeprecated The Keywords API should no longer be used. Use the Categories API instead.
  * @api { get } /keywords/:keywordId Get a Keyword's information.
  * @apiName GetKeyword
- * @apiGroup Keywords
+ * @apiGroup Keywords [DEPRECATED]
+ * @apiDescription **- The Keywords API should no longer be used. Use the Categories API instead. -**
  *
  * @apiParam (URL Parameters) { String } keywordId The ID of the Keyword (uuid v4).
  *
@@ -245,9 +251,11 @@ keywordsRouter.get(
 );
 
 /**
+ * @apiDeprecated The Keywords API should no longer be used. Use the Categories API instead.
  * @api { patch } /keywords/:keywordId Update a Keyword's information.
  * @apiName UpdateKeyword
- * @apiGroup Keywords
+ * @apiGroup Keywords [DEPRECATED]
+ * @apiDescription **- The Keywords API should no longer be used. Use the Categories API instead. -**
  *
  * @apiParam (URL Parameters) { String } keywordId The ID of the Keyword to update (uuid v4).
  *
@@ -324,9 +332,11 @@ keywordsRouter.patch(
 );
 
 /**
+ * @apiDeprecated The Keywords API should no longer be used. Use the Categories API instead.
  * @api { delete } /keywords/:keywordId Delete a Keyword.
  * @apiName DeleteKeyword
- * @apiGroup Keywords
+ * @apiGroup Keywords [DEPRECATED]
+ * @apiDescription **- The Keywords API should no longer be used. Use the Categories API instead. -**
  *
  * @apiParam (URL Parameters) { String } keywordId The ID of the Keyword to delete (uuid v4).
  *

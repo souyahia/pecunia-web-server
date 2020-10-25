@@ -100,6 +100,7 @@ describe('Keywords Controller', () => {
     const category2 = await entityManager.save(newCategory2);
 
     const keywords: Keyword[] = [];
+    const wrongKeywords: Keyword[] = [];
     const promises: Promise<Keyword>[] = [];
     for (let i = 0; i < 5; i++) {
       keywords.push(new Keyword());
@@ -108,11 +109,11 @@ describe('Keywords Controller', () => {
       keywords[i].value = `Keyword #${i}`;
       promises.push(entityManager.save(keywords[i]));
 
-      const wrongKeyword = new Keyword();
-      wrongKeyword.id = v4();
-      wrongKeyword.categoryId = category2.id;
-      wrongKeyword.value = `Wrong Keyword #${i}`;
-      promises.push(entityManager.save(wrongKeyword));
+      wrongKeywords.push(new Keyword());
+      wrongKeywords[i].id = v4();
+      wrongKeywords[i].categoryId = category2.id;
+      wrongKeywords[i].value = `Wrong Keyword #${i}`;
+      promises.push(entityManager.save(wrongKeywords[i]));
     }
     await Promise.all(promises);
     const res = await request(app)
@@ -127,6 +128,11 @@ describe('Keywords Controller', () => {
           return value.id === keywords[i].id;
         }),
       ).toBeGreaterThanOrEqual(0);
+      expect(
+        values.findIndex((value: Keyword) => {
+          return value.id === wrongKeywords[i].id;
+        }),
+      ).toEqual(-1);
     }
     done();
   });
@@ -397,7 +403,7 @@ describe('Keywords Controller', () => {
     done();
   });
 
-  it('PATCH /keywords/:keywordId should return 200 Ok with the new data', async (done) => {
+  it('PATCH /keywords/:keywordId should return 200 OK with the new data', async (done) => {
     const newCategory = new Category();
     newCategory.id = v4();
     newCategory.matchAll = true;

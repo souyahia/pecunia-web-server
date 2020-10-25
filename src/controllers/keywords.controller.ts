@@ -23,6 +23,10 @@ export async function getKeywords(req: AuthRequest, res: Response): Promise<void
     });
   } else {
     const findOptions: FindManyOptions<Keyword> = getQueryOptions(req);
+    if (!findOptions.where) {
+      findOptions.where = {};
+    }
+    Object.assign(findOptions.where, { categoryId: req.query.categoryId });
     const values = await entityManager.find(Keyword, findOptions);
     res.status(200).json({ values });
   }
@@ -104,7 +108,7 @@ export async function updateKeyword(req: AuthRequest, res: Response): Promise<vo
     updatedKeyword.value = req.body.value;
     updatedKeyword.categoryId = lookupKeyword.category.id;
     await updatedKeyword.validate();
-    await entityManager.update(Keyword, { id: keywordId }, updatedKeyword);
+    await entityManager.save(Keyword, updatedKeyword);
     const result = await entityManager.findOne(Keyword, {
       where: {
         id: keywordId,

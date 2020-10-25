@@ -29,7 +29,7 @@
     "UpdateCategory",
     "DeleteCategory",
 
-    "Keywords",
+    "Keywords [DEPRECATED]",
     "GetKeywords",
     "GetKeyword",
     "CreateKeyword",

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { body, param, query } from 'express-validator';
+import { body, param } from 'express-validator';
 import { categoriesController } from '../controllers';
 import { paramsValidatorMiddleware, authMiddleware, Validators, asyncWraper } from '../middleware';
 
@@ -10,18 +10,19 @@ const categoriesRouter = Router();
  * @apiName GetCategories
  * @apiGroup Categories
  *
- * @apiParam (Query Parameters) { String }   userId   The ID of the user (uuid v4).
  * @apiParam (Query Parameters) { int[] }    [range]  Range for pagination. Ex : [3, 15] to get values from index 3 to 15.
  * @apiParam (Query Parameters) { String[] } [sort]   Sort for the results in the format : [field, order]. Order are either "ASC" or "DESC". Fields can be the following : "id", "name" or "matchAll".
  * @apiParam (Query Parameters) { String[] } [search] Filter results by searching keywords in fields with the format : [field, "keyword"]. Fields can be the following : "id", "name" or "matchAll".
  *
- * @apiSuccess (200 OK) { Category[] } values                Array of Categories matching the query.
- * @apiSuccess (200 OK) { String }     values.id             The id of the Category (uuid v4).
- * @apiSuccess (200 OK) { String }     values.name           The name of the Category.
- * @apiSuccess (200 OK) { Boolean }    values.matchAll       The matchAll option of the Category.
- * @apiSuccess (200 OK) { Keyword[] }  values.keywords       Array of Keywords of the Category.
- * @apiSuccess (200 OK) { String }     values.keywords.id    The ID of the Keyword.
- * @apiSuccess (200 OK) { String }     values.keywords.value The value of the Keyword.
+ * @apiSuccess (200 OK) { Category[] } values                     Array of Categories matching the query.
+ * @apiSuccess (200 OK) { String }     values.id                  The ID of the Category (uuid v4).
+ * @apiSuccess (200 OK) { String }     values.userId              The ID of the Category's User (uuid v4).
+ * @apiSuccess (200 OK) { String }     values.name                The name of the Category.
+ * @apiSuccess (200 OK) { Boolean }    values.matchAll            The matchAll option of the Category.
+ * @apiSuccess (200 OK) { Keyword[] }  values.keywords            Array of Keywords of the Category.
+ * @apiSuccess (200 OK) { String }     values.keywords.id         The ID of the Keyword.
+ * @apiSuccess (200 OK) { String }     values.keywords.categoryId The ID of the Keyword's Category (uuid v4).
+ * @apiSuccess (200 OK) { String }     values.keywords.value      The value of the Keyword.
  *
  * @apiSuccessExample Success Response:
  *    HTTP/1.1 200 OK
@@ -30,11 +31,13 @@ const categoriesRouter = Router();
  *        "values" : [
  *          {
  *            "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
+ *            "userId":"045a15d7-81c3-46b3-a627-f6015f507251",
  *            "name": "Video Games",
  *            "matchAll": false,
  *            "keywords": [
  *              {
  *                "id": "df852dda-2924-47b1-ba1f-0704fa36db4a",
+ *                "categoryId":"d052f9c8-1734-4fa4-810c-c5836582daf7",
  *                "value": "NINTENDO"
  *              },
  *              ...
@@ -43,22 +46,6 @@ const categoriesRouter = Router();
  *          ...
  *        ]
  *    ]
- *
- * @apiError (404 Not Found) { String } message The error message.
- *
- * @apiErrorExample User ID not found.
- *    HTTP/1.1 404 Not Found
- *    {
- *      "message": "Unknown user ID."
- *    }
- *
- * @apiError (403 Forbidden) { String } message The error message.
- *
- * @apiErrorExample Invalid ownership.
- *    HTTP/1.1 403 Forbidden
- *    {
- *      "message": "You do not have the rights to access the categories of this user."
- *    }
  *
  * @apiError (401 Unauthorized) { String } message The error message.
  *
@@ -83,7 +70,7 @@ const categoriesRouter = Router();
  *        {
  *          "value": "a",
  *          "msg": "Invalid value",
- *          "param": "userId",
+ *          "param": "sort",
  *          "location": "query"
  *        }
  *      ]
@@ -94,7 +81,6 @@ categoriesRouter.get(
   [
     Validators.authToken,
     Validators.range,
-    query('userId').isUUID(4),
     Validators.getSort(['id', 'name', 'matchAll']),
     Validators.getSearch(['id', 'name', 'matchAll']),
   ],
@@ -113,12 +99,14 @@ categoriesRouter.get(
  *
  * @apiSuccess (201 Created) { String }  id       The ID of the created Category (uuid v4).
  * @apiSuccess (201 Created) { String }  name     The name of the created Category.
+ * @apiSuccess (201 Created) { String }  userId   The ID of the Category's User.
  * @apiSuccess (201 Created) { Boolean } matchAll The matchAll option of the created Category.
  *
  * @apiSuccessExample Success Response
  *    HTTP/1.1 201 Created
  *    {
  *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
+ *      "userId": "26f065ed-a6b8-45eb-bd08-2a57c1e94018",
  *      "name": "Video Games",
  *      "matchAll": false
  *    }
@@ -172,22 +160,26 @@ categoriesRouter.post(
  *
  * @apiParam (URL Parameters) { String } categoryId The ID of the Category (uuid v4).
  *
- * @apiSuccess (200 OK) { String }    id             The id of the Category (uuid v4).
- * @apiSuccess (200 OK) { String }    name           The name of the Category.
- * @apiSuccess (200 OK) { Boolean }   matchAll       The matchAll option of the Category.
- * @apiSuccess (200 OK) { Keyword[] } keywords       Array of Keywords of the Category.
- * @apiSuccess (200 OK) { String }    keywords.id    The ID of the Keyword.
- * @apiSuccess (200 OK) { String }    keywords.value The value of the Keyword.
+ * @apiSuccess (200 OK) { String }     id                  The ID of the Category (uuid v4).
+ * @apiSuccess (200 OK) { String }     userId              The ID of the Category's User (uuid v4).
+ * @apiSuccess (200 OK) { String }     name                The name of the Category.
+ * @apiSuccess (200 OK) { Boolean }    matchAll            The matchAll option of the Category.
+ * @apiSuccess (200 OK) { Keyword[] }  keywords            Array of Keywords of the Category.
+ * @apiSuccess (200 OK) { String }     keywords.id         The ID of the Keyword.
+ * @apiSuccess (200 OK) { String }     keywords.categoryId The ID of the Keyword's Category (uuid v4).
+ * @apiSuccess (200 OK) { String }     keywords.value      The value of the Keyword.
  *
  * @apiSuccessExample Success Response:
  *    HTTP/1.1 200 OK
  *    {
  *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
+ *      "userId":"045a15d7-81c3-46b3-a627-f6015f507251",
  *      "name": "Video Games",
  *      "matchAll": false,
  *      "keywords": [
  *        {
  *          "id": "df852dda-2924-47b1-ba1f-0704fa36db4a",
+ *          "categoryId":"d052f9c8-1734-4fa4-810c-c5836582daf7",
  *          "value": "NINTENDO"
  *        },
  *        ...
@@ -261,22 +253,26 @@ categoriesRouter.get(
  * @apiParam (Body Parameters) { String }    [keywords.id]  The ID of the Keyword. If you do not specify a Keyword ID, a new one will be created.
  * @apiParam (Body Parameters) { String }    keywords.value The value of the Keyword.
  *
- * @apiSuccess (200 OK) { String }    id             The id of the updated Category (uuid v4).
- * @apiSuccess (200 OK) { String }    name           The name of the updated Category.
- * @apiSuccess (200 OK) { Boolean }   matchAll       The matchAll option of the updated Category.
- * @apiSuccess (200 OK) { Keyword[] } keywords       Array of Keywords of the updated Category.
- * @apiSuccess (200 OK) { String }    keywords.id    The ID of the Keyword.
- * @apiSuccess (200 OK) { String }    keywords.value The value of the Keyword.
+ * @apiSuccess (200 OK) { String }     id                  The ID of the updated Category (uuid v4).
+ * @apiSuccess (200 OK) { String }     userId              The ID of the updated Category's User (uuid v4).
+ * @apiSuccess (200 OK) { String }     name                The name of the updated Category.
+ * @apiSuccess (200 OK) { Boolean }    matchAll            The matchAll option of the updated Category.
+ * @apiSuccess (200 OK) { Keyword[] }  keywords            Array of Keywords of the updated Category.
+ * @apiSuccess (200 OK) { String }     keywords.id         The ID of the Keyword.
+ * @apiSuccess (200 OK) { String }     keywords.categoryId The ID of the Keyword's Category (uuid v4).
+ * @apiSuccess (200 OK) { String }     keywords.value      The value of the Keyword.
  *
  * @apiSuccessExample Success Response:
  *    HTTP/1.1 200 OK
  *    {
  *      "id": "d052f9c8-1734-4fa4-810c-c5836582daf7",
+ *      "userId":"045a15d7-81c3-46b3-a627-f6015f507251",
  *      "name": "Video Games",
  *      "matchAll": false,
  *      "keywords": [
  *        {
  *          "id": "df852dda-2924-47b1-ba1f-0704fa36db4a",
+ *          "categoryId":"d052f9c8-1734-4fa4-810c-c5836582daf7",
  *          "value": "NINTENDO"
  *        },
  *        ...
@@ -348,7 +344,7 @@ categoriesRouter.patch(
     param('categoryId').isUUID(4),
     body('name').optional().isString().isLength({ min: 1, max: 255 }),
     body('matchAll').optional().isBoolean(),
-    Validators.keywordsValidator,
+    Validators.keywords,
   ],
   paramsValidatorMiddleware,
   authMiddleware,
