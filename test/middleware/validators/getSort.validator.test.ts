@@ -24,31 +24,37 @@ describe('Sort Parameter Validator', () => {
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if sort is not an Array', async (done) => {
     const res = await request(testApp).get('/test?sort={"test":9}');
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if sort has less than 2 elements', async (done) => {
     const res = await request(testApp).get('/test?sort=[]');
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if sort has an odd length', async (done) => {
     const res = await request(testApp).get('/test?sort=["field1", "hello", "field2"]');
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if sort has unknown fields', async (done) => {
     const res = await request(testApp).get('/test?sort=["unknown","test"]');
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if sort has non-string keywords', async (done) => {
     const res = await request(testApp).get(`/test?sort=["${fields[0]}",1]`);
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if sort has unknown sorting order', async (done) => {
     const res = await request(testApp).get(`/test?sort=["${fields[0]}","DESCC"]`);
     expect(res.status).toEqual(400);

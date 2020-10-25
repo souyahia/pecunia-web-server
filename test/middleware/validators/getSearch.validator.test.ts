@@ -24,31 +24,37 @@ describe('Search Parameter Validator', () => {
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if search is not an Array', async (done) => {
     const res = await request(testApp).get('/test?search={"test":9}');
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if search has less than 2 elements', async (done) => {
     const res = await request(testApp).get('/test?search=[]');
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if search has an odd length', async (done) => {
     const res = await request(testApp).get('/test?search=["field1", "hello", "field2"]');
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if search has unknown fields', async (done) => {
     const res = await request(testApp).get('/test?search=["unknown","test"]');
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if search has non-string keywords', async (done) => {
     const res = await request(testApp).get(`/test?search=["${fields[0]}",1]`);
     expect(res.status).toEqual(400);
     done();
   });
+
   it('should throw an error if search has empty keywords', async (done) => {
     const res = await request(testApp).get(`/test?search=["${fields[0]}",""]`);
     expect(res.status).toEqual(400);

@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { getManager, FindManyOptions } from 'typeorm';
+import { v4 } from 'uuid';
 import { Category, Keyword } from '../entities';
 import { AuthRequest } from '../auth';
 import { getQueryOptions } from '../utils';
@@ -8,7 +9,7 @@ export async function getKeywords(req: AuthRequest, res: Response): Promise<void
   const entityManager = getManager();
   const lookupCategory = await entityManager.findOne(Category, {
     where: {
-      id: req.query.category,
+      id: req.query.categoryId,
     },
     relations: ['user'],
   });
@@ -22,6 +23,10 @@ export async function getKeywords(req: AuthRequest, res: Response): Promise<void
     });
   } else {
     const findOptions: FindManyOptions<Keyword> = getQueryOptions(req);
+    if (!findOptions.where) {
+      findOptions.where = {};
+    }
+    Object.assign(findOptions.where, { categoryId: req.query.categoryId });
     const values = await entityManager.find(Keyword, findOptions);
     res.status(200).json({ values });
   }
@@ -55,6 +60,7 @@ export async function getKeyword(req: AuthRequest, res: Response): Promise<void>
 
 export async function createKeyword(req: AuthRequest, res: Response): Promise<void> {
   const newKeyword = new Keyword();
+  newKeyword.id = v4();
   newKeyword.categoryId = req.body.categoryId;
   newKeyword.value = req.body.value;
 
@@ -102,7 +108,7 @@ export async function updateKeyword(req: AuthRequest, res: Response): Promise<vo
     updatedKeyword.value = req.body.value;
     updatedKeyword.categoryId = lookupKeyword.category.id;
     await updatedKeyword.validate();
-    await entityManager.update(Keyword, { id: keywordId }, updatedKeyword);
+    await entityManager.save(Keyword, updatedKeyword);
     const result = await entityManager.findOne(Keyword, {
       where: {
         id: keywordId,

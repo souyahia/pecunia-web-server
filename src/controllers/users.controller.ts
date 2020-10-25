@@ -95,7 +95,7 @@ export async function updateUser(req: AuthRequest, res: Response): Promise<void>
       updatedUser.password = lookupUser.password;
     }
     await updatedUser.validate();
-    await entityManager.update(User, { id: userId }, updatedUser);
+    await entityManager.save(User, updatedUser);
     const result = await entityManager.findOne(User, {
       where: {
         id: userId,

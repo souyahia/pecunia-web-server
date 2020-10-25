@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Users (
 ) COMMENT='Users accounts table.';
 
 CREATE TABLE IF NOT EXISTS Categories (
-  id INTEGER AUTO_INCREMENT NOT NULL,
+  id NVARCHAR(255) NOT NULL,
   userId NVARCHAR(255) NOT NULL,
   name NVARCHAR(255) NOT NULL,
   matchAll TINYINT(1),
@@ -18,15 +18,15 @@ CREATE TABLE IF NOT EXISTS Categories (
 ) COMMENT='Categories table.';
 
 CREATE TABLE IF NOT EXISTS Keywords (
-  id INTEGER AUTO_INCREMENT NOT NULL,
-  categoryId INTEGER NOT NULL,
+  id NVARCHAR(255) NOT NULL,
+  categoryId NVARCHAR(255) NOT NULL,
   value NVARCHAR(255) NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (categoryId) REFERENCES Categories(id)
 ) COMMENT='Keywords table.';
 
 CREATE TABLE IF NOT EXISTS Transactions (
-  id INTEGER AUTO_INCREMENT NOT NULL,
+  id NVARCHAR(255) NOT NULL,
   userId NVARCHAR(255) NOT NULL,
   date DATETIME NOT NULL,
   amount FLOAT NOT NULL,
@@ -43,8 +43,8 @@ CREATE TABLE IF NOT EXISTS Transactions (
 ) COMMENT='Transactions table.';
 
 CREATE TABLE IF NOT EXISTS TransactionCategories (
-  transactionId INTEGER NOT NULL,
-  categoryId INTEGER NOT NULL,
+  transactionId NVARCHAR(255) NOT NULL,
+  categoryId NVARCHAR(255) NOT NULL,
   PRIMARY KEY (transactionId, categoryId),
   FOREIGN KEY (transactionId) REFERENCES Transactions(id),
   FOREIGN KEY (categoryId) REFERENCES Categories(id)

@@ -1,14 +1,14 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   ManyToOne,
   ManyToMany,
   JoinTable,
   Index,
   JoinColumn,
+  PrimaryColumn,
 } from 'typeorm';
-import { Length, IsDate, IsNumber, IsString, IsOptional, IsIn } from 'class-validator';
+import { Length, IsDate, IsNumber, IsString, IsOptional, IsIn, IsUUID } from 'class-validator';
 import ValidableEntity from './validableEntity';
 import User from './user.entity';
 import Category from './category.entity';
@@ -16,8 +16,10 @@ import { TRNTYPES, ISO_4217_CURRENCY_CODES } from '../business';
 
 @Entity({ name: 'Transactions' })
 export default class Transaction extends ValidableEntity {
-  @PrimaryGeneratedColumn({ type: 'integer' })
-  id: number;
+  @PrimaryColumn({ type: 'nvarchar', length: 255 })
+  @IsString()
+  @IsUUID('4')
+  id: string;
 
   @Column({ type: 'nvarchar', nullable: true })
   userId?: string;
