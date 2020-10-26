@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { getManager, FindManyOptions } from 'typeorm';
+import { getManager, FindManyOptions, DeleteResult } from 'typeorm';
 import { v4 } from 'uuid';
 import { Category, Keyword } from '../entities';
 import { AuthRequest } from '../auth';
@@ -50,6 +50,7 @@ export async function createCategory(req: AuthRequest, res: Response): Promise<v
   newCategory.name = req.body.name;
 
   const entityManager = getManager();
+  await newCategory.validate();
   const category = await entityManager.save(newCategory);
   res.status(201).json(category);
 }
@@ -95,6 +96,22 @@ export async function updateCategory(req: AuthRequest, res: Response): Promise<v
           updatedCategory.keywords[i].id = v4();
         }
       }
+      // Since TypeOrm doesn't support onDelete cascades for OneToMany relationships, we have to make the diff
+      // manually and delete child entities by hand... See :
+      // https://github.com/typeorm/typeorm/issues/5645
+      // https://github.com/typeorm/typeorm/issues/2121
+      // https://github.com/typeorm/typeorm/issues/1351
+      // etc...
+      const promises: Promise<DeleteResult>[] = [];
+      for (let i = 0; i < lookupCategory.keywords.length; i++) {
+        const index = updatedCategory.keywords.findIndex((value: Keyword) => {
+          return value.id === lookupCategory.keywords[i].id;
+        });
+        if (index === -1) {
+          promises.push(entityManager.delete(Keyword, { id: lookupCategory.keywords[i].id }));
+        }
+      }
+      await Promise.all(promises);
     } else {
       updatedCategory.keywords = lookupCategory.keywords;
     }

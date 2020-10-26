@@ -393,6 +393,43 @@ describe('Categories Controller', () => {
     done();
   });
 
+  it('PATCH /categories/:categoryId should allow to remove a keyword from a category, and from the database', async (done) => {
+    const newCategory = new Category();
+    newCategory.id = v4();
+    newCategory.matchAll = true;
+    newCategory.name = 'TEST CATEGORY';
+    newCategory.userId = user1.id;
+    newCategory.keywords = [new Keyword()];
+    newCategory.keywords[0].id = v4();
+    newCategory.keywords[0].value = 'TEST KEYWORD';
+
+    const entityManager = getManager();
+    const category = await entityManager.save(newCategory);
+
+    await request(app)
+      .patch(`/categories/${category.id}`)
+      .set({ authorization: `Bearer ${user1Token}` })
+      .send({
+        keywords: [],
+      });
+
+    const lookupCategory = await entityManager.findOne(Category, {
+      where: {
+        id: category.id,
+      },
+      relations: ['keywords'],
+    });
+    expect(lookupCategory.keywords.length).toEqual(0);
+
+    const lookupKeyword = await entityManager.findOne(Keyword, {
+      where: {
+        id: category.keywords[0].id,
+      },
+    });
+    expect(lookupKeyword).toBeUndefined();
+    done();
+  });
+
   it('PATCH /categories/:categoryId should return 404 Not Found when given a keyword ID not previously in the keywords array of the category', async (done) => {
     const newCategory = new Category();
     newCategory.id = v4();

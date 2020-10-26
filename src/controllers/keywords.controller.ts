@@ -80,6 +80,7 @@ export async function createKeyword(req: AuthRequest, res: Response): Promise<vo
       message: 'You do not have the rights to add a keyword to this category.',
     });
   } else {
+    await newKeyword.validate();
     const keyword = await entityManager.save(newKeyword);
     res.status(201).json(keyword);
   }
